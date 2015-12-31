@@ -52,7 +52,16 @@
   <ItemGroup>
     <Compile Include="Actors\ConsoleReaderActor.cs" />
     <Compile Include="Actors\ConsoleWriterActor.cs" />
+    <Compile Include="Actors\FileValidatorActor.cs" />
+    <Compile Include="Actors\TailActors\FileError.cs" />
+    <Compile Include="Actors\TailActors\FileWrite.cs" />
+    <Compile Include="Actors\TailActors\InitialRead.cs" />
+    <Compile Include="Actors\TailActors\StartTail.cs" />
+    <Compile Include="Actors\TailActors\StopTail.cs" />
+    <Compile Include="Actors\TailActors\TailActor.cs" />
+    <Compile Include="Actors\TailActors\TailCoordinatorActor.cs" />
     <Compile Include="Actors\ValidationActor.cs" />
+    <Compile Include="FileObserver.cs" />
     <Compile Include="Messages\ErrorMessages\InputError.cs" />
     <Compile Include="Messages\ErrorMessages\NullInputError.cs" />
     <Compile Include="Messages\ErrorMessages\ValidationError.cs" />

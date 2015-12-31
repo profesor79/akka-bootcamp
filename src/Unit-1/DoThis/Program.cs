@@ -13,6 +13,8 @@ namespace WinTail
     using Akka.Actor;
 
     using WinTail.Actors;
+    using WinTail.Actors.TailActors;
+    using WinTail.Actors.WinTail;
 
     #region Program
 
@@ -40,8 +42,11 @@ namespace WinTail
             // time to make your first actors!
             var consoleWriterProps = Props.Create<ConsoleWriterActor>();
             var consoleWriterActor = myActorSystem.ActorOf(consoleWriterProps, "consoleWriterActor");
+
+            var tailCoordinatingProps = Props.Create(() => new TailCoordinatorActor());
+            var tailCoordinatingActor = myActorSystem.ActorOf(tailCoordinatingProps, "tailCoordinator");
             
-            var validationActorProps = Props.Create(() => new ValidationActor(consoleWriterActor));
+            var validationActorProps = Props.Create(() => new FileValidatorActor(consoleWriterActor, tailCoordinatingActor));
             var validationActor = myActorSystem.ActorOf(validationActorProps, "validationActor");
 
             var consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
