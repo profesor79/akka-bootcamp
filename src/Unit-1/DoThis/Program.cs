@@ -6,15 +6,19 @@
 //   Defines the Program type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail
 {
     using System;
 
     using Akka.Actor;
 
+    using WinTail.Actors;
+
     #region Program
 
+    /// <summary>
+    /// The program.
+    /// </summary>
     internal class Program
     {
         /// <summary>
@@ -34,8 +38,14 @@ namespace WinTail
             myActorSystem = ActorSystem.Create("MyActorSystem");
 
             // time to make your first actors!
-            var consoleWriterActor = myActorSystem.ActorOf(Props.Create(() => new ConsoleWriterActor()));
-            var consoleReaderActor = myActorSystem.ActorOf(Props.Create(() => new ConsoleReaderActor(consoleWriterActor)));
+            var consoleWriterProps = Props.Create<ConsoleWriterActor>();
+            var consoleWriterActor = myActorSystem.ActorOf(consoleWriterProps, "consoleWriterActor");
+            
+            var validationActorProps = Props.Create(() => new ValidationActor(consoleWriterActor));
+            var validationActor = myActorSystem.ActorOf(validationActorProps, "validationActor");
+
+            var consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
+            var consoleReaderActor = myActorSystem.ActorOf(consoleReaderProps, "consoleReaderActor");
 
             // tell console reader to begin
             consoleReaderActor.Tell(ConsoleReaderActor.StartCommand);

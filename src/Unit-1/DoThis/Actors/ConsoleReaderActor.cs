@@ -8,7 +8,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace WinTail
+namespace WinTail.Actors
 {
     using System;
 
@@ -33,17 +33,17 @@ namespace WinTail
         /// <summary>
         /// The console writer actor.
         /// </summary>
-        private readonly IActorRef consoleWriterActor;
+        private readonly IActorRef validationActor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleReaderActor"/> class.
         /// </summary>
-        /// <param name="consoleWriterActor">
+        /// <param name="validationActor">
         /// The console writer actor.
         /// </param>
-        public ConsoleReaderActor(IActorRef consoleWriterActor)
+        public ConsoleReaderActor(IActorRef validationActor)
         {
-            this.consoleWriterActor = consoleWriterActor;
+            this.validationActor = validationActor;
         }
 
         /// <summary>
@@ -57,10 +57,6 @@ namespace WinTail
             if (message.Equals(StartCommand))
             {
                 DoPrintInstructions();
-            }
-            else if (message is Messages.ErrorMessages.InputError)
-            {
-                this.consoleWriterActor.Tell(message as Messages.ErrorMessages.InputError);
             }
 
             this.GetAndValidateInput();
@@ -98,36 +94,18 @@ namespace WinTail
         private void GetAndValidateInput()
         {
             var message = Console.ReadLine();
-            if (string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message) &&
+            string.Equals(message, ExitCommand, StringComparison.OrdinalIgnoreCase))
             {
-                // signal that the user needs to supply an input, as previously
-                // received input was blank
-                this.Self.Tell(new Messages.ErrorMessages.NullInputError("No input received."));
-            }
-            else if (string.Equals(message, ExitCommand, StringComparison.OrdinalIgnoreCase))
-            {
-                // shut down the entire actor system (allows the process to exit)
+                // if user typed ExitCommand, shut down the entire actor
+                // system (allows the process to exit)
                 Context.System.Shutdown();
+                return;
             }
-            else
-            {
-                var valid = IsValid(message);
-                if (valid)
-                {
-                    this.consoleWriterActor.Tell(
-                        new Messages.SuccessMessages.InputSuccess(
-                            "Thank you!\n Message was valid."));
 
-                    // continue reading messages from console
-                    this.Self.Tell(new Messages.SystemMessages.ContinueProcessing());
-                }
-                else
-                {
-                    this.Self.Tell(
-                        new Messages.ErrorMessages.ValidationError(
-                            "Invalid: input had \nodd number of characters."));
-                }
-            }
+            // otherwise, just hand message off to validation actor
+            // (by telling its actor ref)
+            validationActor.Tell(message);
         }
 
         

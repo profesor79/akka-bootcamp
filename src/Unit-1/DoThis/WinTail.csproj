@@ -50,8 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleReaderActor.cs" />
-    <Compile Include="ConsoleWriterActor.cs" />
+    <Compile Include="Actors\ConsoleReaderActor.cs" />
+    <Compile Include="Actors\ConsoleWriterActor.cs" />
+    <Compile Include="Actors\ValidationActor.cs" />
     <Compile Include="Messages\ErrorMessages\InputError.cs" />
     <Compile Include="Messages\ErrorMessages\NullInputError.cs" />
     <Compile Include="Messages\ErrorMessages\ValidationError.cs" />
