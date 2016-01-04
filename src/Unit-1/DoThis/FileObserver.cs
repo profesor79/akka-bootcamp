@@ -6,11 +6,11 @@
 //   FileObserver.cs
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail
 {
     using System;
     using System.IO;
+
     using Akka.Actor;
 
     using WinTail.Actors.TailActors;
@@ -46,6 +46,15 @@ namespace WinTail
         /// </summary>
         private readonly string fileNameOnly;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileObserver"/> class.
+        /// </summary>
+        /// <param name="tailActor">
+        /// The tail actor.
+        /// </param>
+        /// <param name="absoluteFilePath">
+        /// The absolute file path.
+        /// </param>
         public FileObserver(IActorRef tailActor, string absoluteFilePath)
         {
             this.tailActor = tailActor;
@@ -89,8 +98,10 @@ namespace WinTail
         /// <summary>
         /// Callback for <see cref="FileSystemWatcher"/> file error events.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
         private void OnFileError(object sender, ErrorEventArgs e)
         {
             this.tailActor.Tell(new FileError(this.fileNameOnly, e.GetException().Message), ActorRefs.NoSender);
@@ -99,8 +110,10 @@ namespace WinTail
         /// <summary>
         /// Callback for <see cref="FileSystemWatcher"/> file change events.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             if (e.ChangeType == WatcherChangeTypes.Changed)

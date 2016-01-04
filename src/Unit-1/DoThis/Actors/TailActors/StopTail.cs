@@ -6,7 +6,6 @@
 //   Stop tailing the file at user-specified path.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Actors.TailActors
 {
     using System.Diagnostics.Contracts;
@@ -27,10 +26,13 @@ namespace WinTail.Actors.TailActors
             this.FilePath = filePath;
         }
 
+        /// <summary>
+        /// The object invariant.
+        /// </summary>
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            Contract.Invariant(FilePath != null);
+            Contract.Invariant(this.FilePath != null);
         }
 
         /// <summary>

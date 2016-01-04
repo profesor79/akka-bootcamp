@@ -6,7 +6,6 @@
 //   The input success.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Messages.SuccessMessages
 {
     /// <summary>

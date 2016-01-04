@@ -3,11 +3,10 @@
 //   
 // </copyright>
 // <summary>
-//   Monitors the file at <see cref="filePath" /> for changes and sends
+//   Monitors the file at  for changes and sends
 //   file updates to console.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Actors.TailActors
 {
     using System.Diagnostics.Contracts;
@@ -22,10 +21,6 @@ namespace WinTail.Actors.TailActors
     /// </summary>
     public class TailActor : UntypedActor
     {
-        #region Message types
-
-        #endregion
-
         /// <summary>
         /// The _file path.
         /// </summary>
@@ -74,9 +69,9 @@ namespace WinTail.Actors.TailActors
             // open the file stream with shared read/write permissions
             // (so file can be written to while open)
             this.fileStream = new FileStream(
-                Path.GetFullPath(this.filePath),
-                FileMode.Open,
-                FileAccess.Read,
+                Path.GetFullPath(this.filePath), 
+                FileMode.Open, 
+                FileAccess.Read, 
                 FileShare.ReadWrite);
             this.fileStreamReader = new StreamReader(this.fileStream, Encoding.UTF8);
 

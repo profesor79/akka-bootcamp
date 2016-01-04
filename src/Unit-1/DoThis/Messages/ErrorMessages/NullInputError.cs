@@ -6,7 +6,6 @@
 //   The null input error.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Messages.ErrorMessages
 {
     /// <summary>
@@ -14,6 +13,12 @@ namespace WinTail.Messages.ErrorMessages
     /// </summary>
     public class NullInputError:InputError
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NullInputError"/> class.
+        /// </summary>
+        /// <param name="reason">
+        /// The reason.
+        /// </param>
         public NullInputError(string reason)
             : base(reason)
         {

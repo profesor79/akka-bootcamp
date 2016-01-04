@@ -6,7 +6,6 @@
 //   FileValidatorActor.cs
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Actors
 {
     using System.IO;

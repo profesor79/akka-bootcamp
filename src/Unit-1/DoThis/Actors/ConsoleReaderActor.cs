@@ -4,10 +4,9 @@
 // </copyright>
 // <summary>
 //   Actor responsible for reading FROM the console.
-//   Also responsible for calling <see cref="ActorSystem.Shutdown" />.
+//   Also responsible for calling .
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Actors
 {
     using System;
@@ -103,7 +102,7 @@ namespace WinTail.Actors
 
             // otherwise, just hand message off to validation actor
             // (by telling its actor ref)
-            validationActor.Tell(message);
+            this.validationActor.Tell(message);
         }
 
         

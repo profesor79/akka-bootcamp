@@ -6,7 +6,6 @@
 //   The input error.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Messages.ErrorMessages
 {
     /// <summary>
@@ -14,11 +13,20 @@ namespace WinTail.Messages.ErrorMessages
     /// </summary>
     public class InputError
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputError"/> class.
+        /// </summary>
+        /// <param name="reason">
+        /// The reason.
+        /// </param>
         public InputError(string reason)
         {
             this.Reason = reason;
         }
 
+        /// <summary>
+        /// Gets the reason.
+        /// </summary>
         public string Reason { get; private set; }
     }
 }

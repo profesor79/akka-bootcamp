@@ -6,7 +6,6 @@
 //   The tail coordinator actor.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace WinTail.Actors.TailActors
 {
     using System;
@@ -48,8 +47,9 @@ namespace WinTail.Actors.TailActors
             return new OneForOneStrategy(
                 10, // maxNumberOfRetries
                 TimeSpan.FromSeconds(30), // withinTimeRange
-                x => // localOnlyDecider
-                {
+                x =>
+                    {
+                        // localOnlyDecider
                     // Maybe we consider ArithmeticException to not be application critical
                     // so we just ignore the error and keep going.
                     if (x is ArithmeticException) return Directive.Resume;
