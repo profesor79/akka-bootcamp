@@ -3,19 +3,11 @@
 //   
 // </copyright>
 // <summary>
-//   Add a new <see cref="Series" /> to the chart
+//   Add a new  to the chart
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChartApp.Actors
+namespace ChartApp.Actors.ChartingActor
 {
     using System.Windows.Forms.DataVisualization.Charting;
 

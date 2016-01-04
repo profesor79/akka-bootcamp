@@ -24,7 +24,7 @@ namespace ChartApp.Properties
         /// <summary>
         /// The default instance.
         /// </summary>
-        private static Settings defaultInstance = (Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings()));
+        private static Settings defaultInstance = (Settings)global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings());
 
         /// <summary>
         /// Gets the default.

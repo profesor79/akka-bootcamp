@@ -6,6 +6,7 @@
 //   The main.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace ChartApp
 {
     using System;
@@ -17,12 +18,28 @@ namespace ChartApp
     using Akka.Util.Internal;
 
     using ChartApp.Actors;
+    using ChartApp.Actors.ButtonToggleActor;
+    using ChartApp.Actors.ChartingActor;
+    using ChartApp.Actors.PerformanceCounterCoordinatorActor;
+    using ChartApp.Enums;
+    using ChartApp.Messages;
 
     /// <summary>
     /// The main.
     /// </summary>
     public partial class Main : Form
     {
+        /// <summary>
+        /// The coordinator actor.
+        /// </summary>
+        private IActorRef coordinatorActor;
+
+        /// <summary>
+        /// The toggle actors.
+        /// </summary>
+        private Dictionary<CounterType, IActorRef> toggleActors = new Dictionary<CounterType, 
+            IActorRef>();
+
         /// <summary>
         /// The _chart actor.
         /// </summary>
@@ -54,12 +71,31 @@ namespace ChartApp
         /// </param>
         private void MainLoad(object sender, EventArgs e)
         {
-            this.chartActor = Program.ChartActors.ActorOf(Props.Create(() => new ChartingActor(this.sysChart)), "charting");
-            var series = ChartDataHelper.RandomSeries("FakeSeries" + this.seriesCounter.GetAndIncrement());
-            this.chartActor.Tell(new InitializeChart(new Dictionary<string, Series>()
-            {
-                {series.Name, series}
-            }));
+            this.chartActor = Program.ChartActors.ActorOf(Props.Create(() =>
+      new ChartingActor(this.sysChart)), "charting");
+            this.chartActor.Tell(new InitializeChart(null)); // no initial series
+
+            this.coordinatorActor = Program.ChartActors.ActorOf(Props.Create(() =>
+                    new PerformanceCounterCoordinatorActor(this.chartActor)), "counters");
+
+            // CPU button toggle actor
+            this.toggleActors[CounterType.Cpu] = Program.ChartActors.ActorOf(
+                Props.Create(() => new ButtonToggleActor(this.coordinatorActor, this.CpuToggle, CounterType.Cpu, 
+                    false)).WithDispatcher("akka.actor.synchronized-dispatcher"));
+
+            // MEMORY button toggle actor
+            this.toggleActors[CounterType.Memory] = Program.ChartActors.ActorOf(
+               Props.Create(() => new ButtonToggleActor(this.coordinatorActor, this.MemoryToggle, 
+                CounterType.Memory, false))
+                .WithDispatcher("akka.actor.synchronized-dispatcher"));
+
+            // DISK button toggle actor
+            this.toggleActors[CounterType.Disk] = Program.ChartActors.ActorOf(
+               Props.Create(() => new ButtonToggleActor(this.coordinatorActor, this.DiskToggle, CounterType.Disk, 
+                false)).WithDispatcher("akka.actor.synchronized-dispatcher"));
+
+            // Set the CPU toggle to ON so we start getting some data
+            this.toggleActors[CounterType.Cpu].Tell(new Toggle());
         }
 
         /// <summary>
@@ -83,7 +119,7 @@ namespace ChartApp
         #endregion
 
         /// <summary>
-        /// The add chart series click.
+        /// The cpu toggle click.
         /// </summary>
         /// <param name="sender">
         /// The sender.
@@ -91,10 +127,37 @@ namespace ChartApp
         /// <param name="e">
         /// The e.
         /// </param>
-        private void AddChartSeriesClick(object sender, EventArgs e)
+        private void CpuToggleClick(object sender, EventArgs e)
         {
-            var series = ChartDataHelper.RandomSeries("FakeSeries" + this.seriesCounter.GetAndIncrement());
-            this.chartActor.Tell(new AddSeries(series));
+            this.toggleActors[CounterType.Cpu].Tell(new Toggle());
+        }
+
+        /// <summary>
+        /// The memory toggle click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MemoryToggleClick(object sender, EventArgs e)
+        {
+            this.toggleActors[CounterType.Memory].Tell(new Toggle());
+        }
+
+        /// <summary>
+        /// The disk toggle click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void DiskToggleClick(object sender, EventArgs e)
+        {
+            this.toggleActors[CounterType.Disk].Tell(new Toggle());
         }
     }
 }

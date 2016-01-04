@@ -1,4 +1,12 @@
-﻿namespace ChartApp.Actors
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InitializeChart.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The initialize chart.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace ChartApp.Messages
 {
     using System.Collections.Generic;
     using System.Windows.Forms.DataVisualization.Charting;

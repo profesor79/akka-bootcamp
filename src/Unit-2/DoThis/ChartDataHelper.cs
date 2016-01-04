@@ -8,8 +8,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-
-
 namespace ChartApp
 {
     using System;
@@ -17,7 +15,6 @@ namespace ChartApp
     using System.Windows.Forms.DataVisualization.Charting;
 
     using Akka.Util;
-
 
     /// <summary>
     /// Helper class for creating random data for chart plots
