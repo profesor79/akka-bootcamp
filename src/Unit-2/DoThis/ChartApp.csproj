@@ -54,8 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\AddSeries.cs" />
     <Compile Include="Actors\ChartingActor.cs" />
-    <Compile Include="Actors\InitializeChart.cs" />
+    <Compile Include="Messages\InitializeChart.cs" />
     <Compile Include="ChartDataHelper.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>

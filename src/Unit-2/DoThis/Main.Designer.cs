@@ -46,40 +46,57 @@ namespace ChartApp
         /// </summary>
         private void InitializeComponent()
         {
-            ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.sysChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)this.sysChart).BeginInit();
+            this.AddChartSeries = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).BeginInit();
             this.SuspendLayout();
-
+            // 
             // sysChart
-            chartArea1.Name = "ChartArea1";
-            this.sysChart.ChartAreas.Add(chartArea1);
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.sysChart.ChartAreas.Add(chartArea2);
             this.sysChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.sysChart.Legends.Add(legend1);
+            legend2.Name = "Legend1";
+            this.sysChart.Legends.Add(legend2);
             this.sysChart.Location = new System.Drawing.Point(0, 0);
+            this.sysChart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sysChart.Name = "sysChart";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.sysChart.Series.Add(series1);
-            this.sysChart.Size = new System.Drawing.Size(684, 446);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.sysChart.Series.Add(series2);
+            this.sysChart.Size = new System.Drawing.Size(912, 549);
             this.sysChart.TabIndex = 0;
             this.sysChart.Text = "sysChart";
-
+            // 
+            // AddChartSeries
+            // 
+            this.AddChartSeries.Location = new System.Drawing.Point(760, 462);
+            this.AddChartSeries.Name = "AddChartSeries";
+            this.AddChartSeries.Size = new System.Drawing.Size(124, 45);
+            this.AddChartSeries.TabIndex = 1;
+            this.AddChartSeries.Text = "Add New Series";
+            this.AddChartSeries.UseVisualStyleBackColor = true;
+            this.AddChartSeries.Click += new System.EventHandler(this.AddChartSeriesClick);
+            // 
             // Main
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 446);
+            this.ClientSize = new System.Drawing.Size(912, 549);
+            this.Controls.Add(this.AddChartSeries);
             this.Controls.Add(this.sysChart);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Main";
             this.Text = "System Metrics";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormClosing);
             this.Load += new System.EventHandler(this.MainLoad);
-            ((System.ComponentModel.ISupportInitialize)this.sysChart).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -88,6 +105,7 @@ namespace ChartApp
         /// The sys chart.
         /// </summary>
         private Chart sysChart;
+        private System.Windows.Forms.Button AddChartSeries;
     }
 }
 

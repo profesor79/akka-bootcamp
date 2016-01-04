@@ -9,19 +9,20 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
-
-using Akka.Actor;
 
 namespace ChartApp.Actors
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms.DataVisualization.Charting;
+
+    using Akka.Actor;
+
     /// <summary>
     /// The charting actor.
     /// </summary>
-    public class ChartingActor : UntypedActor
+    public class ChartingActor : ReceiveActor
     {
         /// <summary>
         /// The _chart.
@@ -56,20 +57,24 @@ namespace ChartApp.Actors
         {
             this.chart = chart;
             this.seriesIndex = seriesIndex;
+
+            this.Receive<InitializeChart>(ic => this.HandleInitialize(ic));
+            this.Receive<AddSeries>(addSeries => this.HandleAddSeries(addSeries));
         }
 
         /// <summary>
-        /// The on receive.
+        /// The handle add series.
         /// </summary>
-        /// <param name="message">
-        /// The message.
+        /// <param name="series">
+        /// The series.
         /// </param>
-        protected override void OnReceive(object message)
+        private void HandleAddSeries(AddSeries series)
         {
-            if (message is InitializeChart)
+            if (!string.IsNullOrEmpty(series.Series.Name) &&
+            !this.seriesIndex.ContainsKey(series.Series.Name))
             {
-                var ic = message as InitializeChart;
-                this.HandleInitialize(ic);
+                this.seriesIndex.Add(series.Series.Name, series.Series);
+                this.chart.Series.Add(series.Series);
             }
         }
 

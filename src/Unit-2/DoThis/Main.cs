@@ -6,21 +6,18 @@
 //   The main.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-
-
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-
-using Akka.Actor;
-using Akka.Util.Internal;
-
-using ChartApp.Actors;
-
 namespace ChartApp
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+    using System.Windows.Forms.DataVisualization.Charting;
+
+    using Akka.Actor;
+    using Akka.Util.Internal;
+
+    using ChartApp.Actors;
+
     /// <summary>
     /// The main.
     /// </summary>
@@ -84,5 +81,20 @@ namespace ChartApp
         }
 
         #endregion
+
+        /// <summary>
+        /// The add chart series click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void AddChartSeriesClick(object sender, EventArgs e)
+        {
+            var series = ChartDataHelper.RandomSeries("FakeSeries" + this.seriesCounter.GetAndIncrement());
+            this.chartActor.Tell(new AddSeries(series));
+        }
     }
 }
