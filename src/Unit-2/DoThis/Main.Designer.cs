@@ -1,22 +1,40 @@
-﻿namespace ChartApp
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Main.Designer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The main.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ChartApp
 {
+    using System.ComponentModel;
+    using System.Windows.Forms.DataVisualization.Charting;
+
+    /// <summary>
+    /// The main.
+    /// </summary>
     partial class Main
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">
+        /// true if managed resources should be disposed; otherwise, false.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -28,15 +46,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.sysChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.sysChart).BeginInit();
             this.SuspendLayout();
-            // 
+
             // sysChart
-            // 
             chartArea1.Name = "ChartArea1";
             this.sysChart.ChartAreas.Add(chartArea1);
             this.sysChart.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -51,25 +68,26 @@
             this.sysChart.Size = new System.Drawing.Size(684, 446);
             this.sysChart.TabIndex = 0;
             this.sysChart.Text = "sysChart";
-            // 
+
             // Main
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 446);
             this.Controls.Add(this.sysChart);
             this.Name = "Main";
             this.Text = "System Metrics";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
-            this.Load += new System.EventHandler(this.Main_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).EndInit();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormClosing);
+            this.Load += new System.EventHandler(this.MainLoad);
+            ((System.ComponentModel.ISupportInitialize)this.sysChart).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart sysChart;
+        /// <summary>
+        /// The sys chart.
+        /// </summary>
+        private Chart sysChart;
     }
 }
 

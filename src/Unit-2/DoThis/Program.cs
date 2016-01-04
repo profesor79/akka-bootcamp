@@ -1,9 +1,24 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The program.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
+using System;
 using System.Windows.Forms;
+
 using Akka.Actor;
 
 namespace ChartApp
 {
+    /// <summary>
+    /// The program.
+    /// </summary>
     static class Program
     {
         /// <summary>
