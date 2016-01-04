@@ -6,6 +6,7 @@
 //   The continue processing.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Messages.SystemMessages
 {
     /// <summary>

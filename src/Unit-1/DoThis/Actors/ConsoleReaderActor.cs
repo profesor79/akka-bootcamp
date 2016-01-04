@@ -7,6 +7,7 @@
 //   Also responsible for calling .
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors
 {
     using System;
@@ -29,21 +30,6 @@ namespace WinTail.Actors
         /// </summary>
         public const string ExitCommand = "exit";
 
-        /// <summary>
-        /// The console writer actor.
-        /// </summary>
-        private readonly IActorRef validationActor;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleReaderActor"/> class.
-        /// </summary>
-        /// <param name="validationActor">
-        /// The console writer actor.
-        /// </param>
-        public ConsoleReaderActor(IActorRef validationActor)
-        {
-            this.validationActor = validationActor;
-        }
 
         /// <summary>
         /// The on receive.
@@ -100,9 +86,8 @@ namespace WinTail.Actors
                 return;
             }
 
-            // otherwise, just hand message off to validation actor
-            // (by telling its actor ref)
-            this.validationActor.Tell(message);
+            // otherwise, just send the message off for validation
+            Context.ActorSelection("akka://MyActorSystem/user/validationActor").Tell(message);
         }
 
         

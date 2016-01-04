@@ -7,6 +7,7 @@
 //   (write one message at a time, champ :)
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors
 {
     using System;

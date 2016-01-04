@@ -34,17 +34,17 @@ namespace WinTail.Actors.TailActors
         /// <summary>
         /// The _observer.
         /// </summary>
-        private readonly FileObserver observer;
+        private FileObserver observer;
 
         /// <summary>
         /// The _file stream.
         /// </summary>
-        private readonly Stream fileStream;
+        private Stream fileStream;
 
         /// <summary>
         /// The _file stream reader.
         /// </summary>
-        private readonly StreamReader fileStreamReader;
+        private StreamReader fileStreamReader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TailActor"/> class.
@@ -57,11 +57,15 @@ namespace WinTail.Actors.TailActors
         /// </param>
         public TailActor(IActorRef reporterActor, string filePath)
         {
-            Contract.Requires(reporterActor != null);
-            Contract.Requires(filePath != null);
             this.reporterActor = reporterActor;
             this.filePath = filePath;
+        }
 
+        /// <summary>
+        /// The pre start.
+        /// </summary>
+        protected override void PreStart()
+        {
             // start watching file for changes
             this.observer = new FileObserver(this.Self, Path.GetFullPath(this.filePath));
             this.observer.Start();
@@ -78,6 +82,18 @@ namespace WinTail.Actors.TailActors
             // read the initial contents of the file and send it to console as first msg
             var text = this.fileStreamReader.ReadToEnd();
             this.Self.Tell(new InitialRead(this.filePath, text));
+        }
+
+        /// <summary>
+        /// The post stop.
+        /// </summary>
+        protected override void PostStop()
+        {
+            this.observer.Dispose();
+            this.observer = null;
+            this.fileStreamReader.Close();
+            this.fileStreamReader.Dispose();
+            base.PostStop();
         }
 
         /// <summary>

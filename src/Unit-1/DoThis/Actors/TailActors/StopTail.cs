@@ -6,6 +6,7 @@
 //   Stop tailing the file at user-specified path.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors.TailActors
 {
     using System.Diagnostics.Contracts;

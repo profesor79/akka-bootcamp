@@ -6,6 +6,7 @@
 //   The input error.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Messages.ErrorMessages
 {
     /// <summary>

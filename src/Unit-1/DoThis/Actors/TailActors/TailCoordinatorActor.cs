@@ -6,6 +6,7 @@
 //   The tail coordinator actor.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors.TailActors
 {
     using System;

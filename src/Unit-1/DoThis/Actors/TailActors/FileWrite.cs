@@ -6,6 +6,7 @@
 //   Signal that the file has changed, and we need to read the next line of the file.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors.TailActors
 {
     /// <summary>

@@ -6,6 +6,7 @@
 //   FileValidatorActor.cs
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors
 {
     using System.IO;
@@ -26,15 +27,9 @@ namespace WinTail.Actors
         /// </summary>
         private readonly IActorRef consoleWriterActor;
 
-        /// <summary>
-        /// The tail coordinator actor.
-        /// </summary>
-        private readonly IActorRef tailCoordinatorActor;
-
-        public FileValidatorActor(IActorRef consoleWriterActor, IActorRef tailCoordinatorActor)
+        public FileValidatorActor(IActorRef consoleWriterActor )
         {
             this.consoleWriterActor = consoleWriterActor;
-            this.tailCoordinatorActor = tailCoordinatorActor;
         }
 
         /// <summary>
@@ -65,7 +60,7 @@ namespace WinTail.Actors
                         string.Format("Starting processing for {0}", msg)));
 
                     // start coordinator
-                    this.tailCoordinatorActor.Tell(new StartTail(msg, this.consoleWriterActor));
+                    Context.ActorSelection("akka://MyActorSystem/user/tailCoordinatorActor").Tell(new StartTail(msg, this.consoleWriterActor));
                 }
                 else
                 {

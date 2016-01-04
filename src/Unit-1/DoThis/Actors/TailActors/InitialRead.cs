@@ -6,6 +6,7 @@
 //   Signal to read the initial contents of the file at actor startup.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors.TailActors
 {
     /// <summary>

@@ -6,6 +6,7 @@
 //   Signal that the OS had an error accessing the file.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Actors.TailActors
 {
     /// <summary>

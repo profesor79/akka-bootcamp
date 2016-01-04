@@ -6,6 +6,7 @@
 //   The null input error.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace WinTail.Messages.ErrorMessages
 {
     /// <summary>
