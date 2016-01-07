@@ -37,18 +37,21 @@
             // tbRepoUrl
             // 
             this.tbRepoUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbRepoUrl.Location = new System.Drawing.Point(95, 13);
+            this.tbRepoUrl.Location = new System.Drawing.Point(127, 16);
+            this.tbRepoUrl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tbRepoUrl.Name = "tbRepoUrl";
-            this.tbRepoUrl.Size = new System.Drawing.Size(455, 24);
+            this.tbRepoUrl.Size = new System.Drawing.Size(605, 29);
             this.tbRepoUrl.TabIndex = 0;
+            this.tbRepoUrl.Text = "https://github.com/petabridge/akka-bootcamp/";
             // 
             // lblRepo
             // 
             this.lblRepo.AutoSize = true;
             this.lblRepo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRepo.Location = new System.Drawing.Point(3, 16);
+            this.lblRepo.Location = new System.Drawing.Point(4, 20);
+            this.lblRepo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblRepo.Name = "lblRepo";
-            this.lblRepo.Size = new System.Drawing.Size(86, 18);
+            this.lblRepo.Size = new System.Drawing.Size(105, 24);
             this.lblRepo.TabIndex = 1;
             this.lblRepo.Text = "Repo URL";
             // 
@@ -56,9 +59,10 @@
             // 
             this.lblIsValid.AutoSize = true;
             this.lblIsValid.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIsValid.Location = new System.Drawing.Point(95, 44);
+            this.lblIsValid.Location = new System.Drawing.Point(127, 54);
+            this.lblIsValid.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblIsValid.Name = "lblIsValid";
-            this.lblIsValid.Size = new System.Drawing.Size(46, 18);
+            this.lblIsValid.Size = new System.Drawing.Size(60, 24);
             this.lblIsValid.TabIndex = 2;
             this.lblIsValid.Text = "label1";
             this.lblIsValid.Visible = false;
@@ -66,9 +70,10 @@
             // btnLaunch
             // 
             this.btnLaunch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLaunch.Location = new System.Drawing.Point(218, 90);
+            this.btnLaunch.Location = new System.Drawing.Point(291, 111);
+            this.btnLaunch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnLaunch.Name = "btnLaunch";
-            this.btnLaunch.Size = new System.Drawing.Size(142, 37);
+            this.btnLaunch.Size = new System.Drawing.Size(189, 46);
             this.btnLaunch.TabIndex = 3;
             this.btnLaunch.Text = "GO";
             this.btnLaunch.UseVisualStyleBackColor = true;
@@ -76,13 +81,14 @@
             // 
             // LauncherForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 151);
+            this.ClientSize = new System.Drawing.Size(749, 186);
             this.Controls.Add(this.btnLaunch);
             this.Controls.Add(this.lblIsValid);
             this.Controls.Add(this.lblRepo);
             this.Controls.Add(this.tbRepoUrl);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "LauncherForm";
             this.Text = "Who Starred This Repo?";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LauncherForm_FormClosing);
