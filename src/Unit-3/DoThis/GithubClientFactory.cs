@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubClientFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Creates  instances.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubClientFactory.cs" company="none">
@@ -30,10 +39,10 @@ namespace GithubActors
         public static string OAuthToken { get; set; }
 
         /// <summary>
-        /// The get unauthenticated client.
+        ///     The get unauthenticated client.
         /// </summary>
         /// <returns>
-        /// The <see cref="GitHubClient"/>.
+        ///     The <see cref="GitHubClient" />.
         /// </returns>
         public static GitHubClient GetUnauthenticatedClient()
         {
@@ -41,10 +50,10 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// The get client.
+        ///     The get client.
         /// </summary>
         /// <returns>
-        /// The <see cref="GitHubClient"/>.
+        ///     The <see cref="GitHubClient" />.
         /// </returns>
         public static GitHubClient GetClient()
         {

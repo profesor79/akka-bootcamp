@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The program.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="Program.cs" company="none">
@@ -21,7 +30,7 @@ namespace GithubActors
     #endregion
 
     /// <summary>
-    /// The program.
+    ///     The program.
     /// </summary>
     internal static class Program
     {

@@ -1,4 +1,14 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RepoResultsActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Actor responsible for printing the results and progress from a
+//   onto a  (runs on the UI thread)
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="RepoResultsActor.cs" company="none">
@@ -28,24 +38,24 @@ namespace GithubActors.Actors
     public class RepoResultsActor : ReceiveActor
     {
         /// <summary>
-        /// The _has set progress.
+        ///     The _has set progress.
         /// </summary>
-        private readonly bool _hasSetProgress = false;
+        private readonly bool hasSetProgress = false;
 
         /// <summary>
-        /// The _progress bar.
+        ///     The _progress bar.
         /// </summary>
-        private readonly ToolStripProgressBar _progressBar;
+        private readonly ToolStripProgressBar progressBar;
 
         /// <summary>
-        /// The _status label.
+        ///     The _status label.
         /// </summary>
-        private readonly ToolStripStatusLabel _statusLabel;
+        private readonly ToolStripStatusLabel statusLabel;
 
         /// <summary>
-        /// The _user dg.
+        ///     The _user dg.
         /// </summary>
-        private readonly DataGridView _userDg;
+        private readonly DataGridView userDg;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RepoResultsActor"/> class.
@@ -61,14 +71,14 @@ namespace GithubActors.Actors
         /// </param>
         public RepoResultsActor(DataGridView userDg, ToolStripStatusLabel statusLabel, ToolStripProgressBar progressBar)
         {
-            this._userDg = userDg;
-            this._statusLabel = statusLabel;
-            this._progressBar = progressBar;
+            this.userDg = userDg;
+            this.statusLabel = statusLabel;
+            this.progressBar = progressBar;
             this.InitialReceives();
         }
 
         /// <summary>
-        /// The initial receives.
+        ///     The initial receives.
         /// </summary>
         private void InitialReceives()
         {
@@ -77,23 +87,23 @@ namespace GithubActors.Actors
                 stats =>
                     {
                         // time to start animating the progress bar
-                        if (!this._hasSetProgress && stats.ExpectedUsers > 0)
+                        if (!this.hasSetProgress && stats.ExpectedUsers > 0)
                         {
-                            this._progressBar.Minimum = 0;
-                            this._progressBar.Step = 1;
-                            this._progressBar.Maximum = stats.ExpectedUsers;
-                            this._progressBar.Value = stats.UsersThusFar;
-                            this._progressBar.Visible = true;
-                            this._statusLabel.Visible = true;
+                            this.progressBar.Minimum = 0;
+                            this.progressBar.Step = 1;
+                            this.progressBar.Maximum = stats.ExpectedUsers;
+                            this.progressBar.Value = stats.UsersThusFar;
+                            this.progressBar.Visible = true;
+                            this.statusLabel.Visible = true;
                         }
 
-                        this._statusLabel.Text = string.Format(
+                        this.statusLabel.Text = string.Format(
                             "{0} out of {1} users ({2} failures) [{3} elapsed]", 
                             stats.UsersThusFar, 
                             stats.ExpectedUsers, 
                             stats.QueryFailures, 
                             stats.Elapsed);
-                        this._progressBar.Value = stats.UsersThusFar + stats.QueryFailures;
+                        this.progressBar.Value = stats.UsersThusFar + stats.QueryFailures;
                     });
 
             // user update
@@ -104,7 +114,7 @@ namespace GithubActors.Actors
                         {
                             var repo = similarRepo.Repo;
                             var row = new DataGridViewRow();
-                            row.CreateCells(this._userDg);
+                            row.CreateCells(this.userDg);
                             row.Cells[0].Value = repo.Owner.Login;
                             row.Cells[1].Value = repo.Name;
                             row.Cells[2].Value = repo.HtmlUrl;
@@ -112,7 +122,7 @@ namespace GithubActors.Actors
                             row.Cells[4].Value = repo.SubscribersCount;
                             row.Cells[5].Value = repo.StargazersCount;
                             row.Cells[6].Value = repo.ForksCount;
-                            this._userDg.Rows.Add(row);
+                            this.userDg.Rows.Add(row);
                         }
                     });
 
@@ -120,12 +130,12 @@ namespace GithubActors.Actors
             this.Receive<GithubCoordinatorActor.JobFailed>(
                 failed =>
                     {
-                        this._progressBar.Visible = true;
-                        this._progressBar.ForeColor = Color.Red;
-                        this._progressBar.Maximum = 1;
-                        this._progressBar.Value = 1;
-                        this._statusLabel.Visible = true;
-                        this._statusLabel.Text = string.Format(
+                        this.progressBar.Visible = true;
+                        this.progressBar.ForeColor = Color.Red;
+                        this.progressBar.Maximum = 1;
+                        this.progressBar.Value = 1;
+                        this.statusLabel.Visible = true;
+                        this.statusLabel.Text = string.Format(
                             "Failed to gather data for Github repository {0} / {1}", 
                             failed.Repo.Owner, 
                             failed.Repo.Repo);

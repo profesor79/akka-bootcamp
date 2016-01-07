@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubProgressStats.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   used to sort the list of similar repos
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 #region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -36,12 +45,12 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the repo.
+        ///     Gets the repo.
         /// </summary>
         public Repository Repo { get; private set; }
 
         /// <summary>
-        /// Gets or sets the shared starrers.
+        ///     Gets or sets the shared starrers.
         /// </summary>
         public int SharedStarrers { get; set; }
 
@@ -71,7 +80,7 @@ namespace GithubActors
     public class GithubProgressStats
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GithubProgressStats"/> class.
+        ///     Initializes a new instance of the <see cref="GithubProgressStats" /> class.
         /// </summary>
         public GithubProgressStats()
         {
@@ -111,32 +120,32 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the expected users.
+        ///     Gets the expected users.
         /// </summary>
         public int ExpectedUsers { get; private set; }
 
         /// <summary>
-        /// Gets the users thus far.
+        ///     Gets the users thus far.
         /// </summary>
         public int UsersThusFar { get; private set; }
 
         /// <summary>
-        /// Gets the query failures.
+        ///     Gets the query failures.
         /// </summary>
         public int QueryFailures { get; private set; }
 
         /// <summary>
-        /// Gets the start time.
+        ///     Gets the start time.
         /// </summary>
         public DateTime StartTime { get; private set; }
 
         /// <summary>
-        /// Gets the end time.
+        ///     Gets the end time.
         /// </summary>
         public DateTime? EndTime { get; private set; }
 
         /// <summary>
-        /// Gets the elapsed.
+        ///     Gets the elapsed.
         /// </summary>
         public TimeSpan Elapsed
         {
@@ -147,7 +156,7 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets a value indicating whether is finished.
+        ///     Gets a value indicating whether is finished.
         /// </summary>
         public bool IsFinished
         {
@@ -200,10 +209,10 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Query is finished! Set's the <see cref="EndTime"/>
+        ///     Query is finished! Set's the <see cref="EndTime" />
         /// </summary>
         /// <returns>
-        /// The <see cref="GithubProgressStats"/>.
+        ///     The <see cref="GithubProgressStats" />.
         /// </returns>
         public GithubProgressStats Finish()
         {

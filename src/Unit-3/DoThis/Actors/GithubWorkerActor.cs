@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubWorkerActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Individual actor responsible for querying the Github API
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubWorkerActor.cs" company="none">
@@ -29,14 +38,14 @@ namespace GithubActors.Actors
     public class GithubWorkerActor : ReceiveActor
     {
         /// <summary>
-        /// The _git hub client factory.
+        ///     The _git hub client factory.
         /// </summary>
-        private readonly Func<IGitHubClient> _gitHubClientFactory;
+        private readonly Func<IGitHubClient> gitHubClientFactory;
 
         /// <summary>
-        /// The _git hub client.
+        ///     The _git hub client.
         /// </summary>
-        private IGitHubClient _gitHubClient;
+        private IGitHubClient gitHubClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GithubWorkerActor"/> class.
@@ -46,20 +55,20 @@ namespace GithubActors.Actors
         /// </param>
         public GithubWorkerActor(Func<IGitHubClient> gitHubClientFactory)
         {
-            this._gitHubClientFactory = gitHubClientFactory;
+            this.gitHubClientFactory = gitHubClientFactory;
             this.InitialReceives();
         }
 
         /// <summary>
-        /// The pre start.
+        ///     The pre start.
         /// </summary>
         protected override void PreStart()
         {
-            this._gitHubClient = this._gitHubClientFactory();
+            this.gitHubClient = this.gitHubClientFactory();
         }
 
         /// <summary>
-        /// The initial receives.
+        ///     The initial receives.
         /// </summary>
         private void InitialReceives()
         {
@@ -72,7 +81,7 @@ namespace GithubActors.Actors
                         var starrer = (query.Query as QueryStarrer).Login;
                         try
                         {
-                            var getStarrer = this._gitHubClient.Activity.Starring.GetAllForUser(starrer);
+                            var getStarrer = this.gitHubClient.Activity.Starring.GetAllForUser(starrer);
 
                             // ewww
                             getStarrer.Wait();
@@ -95,7 +104,7 @@ namespace GithubActors.Actors
                         var starrers = (query.Query as QueryStarrers).Key;
                         try
                         {
-                            var getStars = this._gitHubClient.Activity.Starring.GetAllStargazers(
+                            var getStars = this.gitHubClient.Activity.Starring.GetAllStargazers(
                                 starrers.Owner, 
                                 starrers.Repo);
 
@@ -115,7 +124,7 @@ namespace GithubActors.Actors
         #region Message classes
 
         /// <summary>
-        /// The query starrers.
+        ///     The query starrers.
         /// </summary>
         public class QueryStarrers
         {
@@ -131,7 +140,7 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the key.
+            ///     Gets the key.
             /// </summary>
             public RepoKey Key { get; private set; }
         }
@@ -153,13 +162,13 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the login.
+            ///     Gets the login.
             /// </summary>
             public string Login { get; private set; }
         }
 
         /// <summary>
-        /// The starred repos for user.
+        ///     The starred repos for user.
         /// </summary>
         public class StarredReposForUser
         {
@@ -179,12 +188,12 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the login.
+            ///     Gets the login.
             /// </summary>
             public string Login { get; private set; }
 
             /// <summary>
-            /// Gets the repos.
+            ///     Gets the repos.
             /// </summary>
             public IEnumerable<Repository> Repos { get; private set; }
         }

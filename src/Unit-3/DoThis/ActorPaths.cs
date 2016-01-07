@@ -1,4 +1,14 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ActorPaths.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Static helper class used to define paths to fixed-name actors
+//   (helps eliminate errors when using )
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="ActorPaths.cs" company="none">
@@ -24,35 +34,35 @@ namespace GithubActors
     public static class ActorPaths
     {
         /// <summary>
-        /// The github authenticator actor.
+        ///     The github authenticator actor.
         /// </summary>
         public static readonly ActorMetaData GithubAuthenticatorActor = new ActorMetaData(
             "authenticator", 
             "akka://GithubActors/user/authenticator");
 
         /// <summary>
-        /// The main form actor.
+        ///     The main form actor.
         /// </summary>
         public static readonly ActorMetaData MainFormActor = new ActorMetaData(
             "mainform", 
             "akka://GithubActors/user/mainform");
 
         /// <summary>
-        /// The github validator actor.
+        ///     The github validator actor.
         /// </summary>
         public static readonly ActorMetaData GithubValidatorActor = new ActorMetaData(
             "validator", 
             "akka://GithubActors/user/validator");
 
         /// <summary>
-        /// The github commander actor.
+        ///     The github commander actor.
         /// </summary>
         public static readonly ActorMetaData GithubCommanderActor = new ActorMetaData(
             "commander", 
             "akka://GithubActors/user/commander");
 
         /// <summary>
-        /// The github coordinator actor.
+        ///     The github coordinator actor.
         /// </summary>
         public static readonly ActorMetaData GithubCoordinatorActor = new ActorMetaData(
             "coordinator", 
@@ -80,12 +90,12 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the path.
+        ///     Gets the path.
         /// </summary>
         public string Path { get; private set; }
     }

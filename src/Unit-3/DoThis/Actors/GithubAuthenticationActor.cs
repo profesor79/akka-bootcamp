@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubAuthenticationActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The github authentication actor.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubAuthenticationActor.cs" company="none">
@@ -24,19 +33,19 @@ namespace GithubActors.Actors
     #endregion
 
     /// <summary>
-    /// The github authentication actor.
+    ///     The github authentication actor.
     /// </summary>
     public class GithubAuthenticationActor : ReceiveActor
     {
         /// <summary>
-        /// The _form.
+        ///     The _form.
         /// </summary>
-        private readonly GithubAuth _form;
+        private readonly GithubAuth form;
 
         /// <summary>
-        /// The _status label.
+        ///     The _status label.
         /// </summary>
-        private readonly Label _statusLabel;
+        private readonly Label statusLabel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GithubAuthenticationActor"/> class.
@@ -49,13 +58,13 @@ namespace GithubActors.Actors
         /// </param>
         public GithubAuthenticationActor(Label statusLabel, GithubAuth form)
         {
-            this._statusLabel = statusLabel;
-            this._form = form;
+            this.statusLabel = statusLabel;
+            this.form = form;
             this.Unauthenticated();
         }
 
         /// <summary>
-        /// The unauthenticated.
+        ///     The unauthenticated.
         /// </summary>
         private void Unauthenticated()
         {
@@ -86,13 +95,13 @@ namespace GithubActors.Actors
         }
 
         /// <summary>
-        /// The become authenticating.
+        ///     The become authenticating.
         /// </summary>
         private void BecomeAuthenticating()
         {
-            this._statusLabel.Visible = true;
-            this._statusLabel.ForeColor = Color.Yellow;
-            this._statusLabel.Text = "Authenticating...";
+            this.statusLabel.Visible = true;
+            this.statusLabel.ForeColor = Color.Yellow;
+            this.statusLabel.Text = "Authenticating...";
             this.Become(this.Authenticating);
         }
 
@@ -104,13 +113,13 @@ namespace GithubActors.Actors
         /// </param>
         private void BecomeUnauthenticated(string reason)
         {
-            this._statusLabel.ForeColor = Color.Red;
-            this._statusLabel.Text = "Authentication failed. Please try again.";
+            this.statusLabel.ForeColor = Color.Red;
+            this.statusLabel.Text = "Authentication failed. Please try again.";
             this.Become(this.Unauthenticated);
         }
 
         /// <summary>
-        /// The authenticating.
+        ///     The authenticating.
         /// </summary>
         private void Authenticating()
         {
@@ -121,14 +130,14 @@ namespace GithubActors.Actors
                     {
                         var launcherForm = new LauncherForm();
                         launcherForm.Show();
-                        this._form.Hide();
+                        this.form.Hide();
                     });
         }
 
         #region Messages
 
         /// <summary>
-        /// The authenticate.
+        ///     The authenticate.
         /// </summary>
         public class Authenticate
         {
@@ -144,27 +153,27 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the o auth token.
+            ///     Gets the o auth token.
             /// </summary>
             public string OAuthToken { get; private set; }
         }
 
         /// <summary>
-        /// The authentication failed.
+        ///     The authentication failed.
         /// </summary>
         public class AuthenticationFailed
         {
         }
 
         /// <summary>
-        /// The authentication cancelled.
+        ///     The authentication cancelled.
         /// </summary>
         public class AuthenticationCancelled
         {
         }
 
         /// <summary>
-        /// The authentication success.
+        ///     The authentication success.
         /// </summary>
         public class AuthenticationSuccess
         {

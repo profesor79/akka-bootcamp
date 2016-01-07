@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RepoResultsForm.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The repo results form.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="RepoResultsForm.cs" company="none">
@@ -23,24 +32,24 @@ namespace GithubActors
     #endregion
 
     /// <summary>
-    /// The repo results form.
+    ///     The repo results form.
     /// </summary>
     public partial class RepoResultsForm : Form
     {
         /// <summary>
-        /// The _github coordinator.
+        ///     The _github coordinator.
         /// </summary>
-        private readonly IActorRef _githubCoordinator;
+        private readonly IActorRef githubCoordinator;
 
         /// <summary>
-        /// The _repo.
+        ///     The _repo.
         /// </summary>
-        private readonly RepoKey _repo;
+        private readonly RepoKey repo;
 
         /// <summary>
-        /// The _form actor.
+        ///     The _form actor.
         /// </summary>
-        private IActorRef _formActor;
+        private IActorRef formActor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RepoResultsForm"/> class.
@@ -53,8 +62,8 @@ namespace GithubActors
         /// </param>
         public RepoResultsForm(IActorRef githubCoordinator, RepoKey repo)
         {
-            this._githubCoordinator = githubCoordinator;
-            this._repo = repo;
+            this.githubCoordinator = githubCoordinator;
+            this.repo = repo;
             this.InitializeComponent();
         }
 
@@ -67,17 +76,17 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void RepoResultsForm_Load(object sender, EventArgs e)
+        private void RepoResultsFormLoad(object sender, EventArgs e)
         {
-            this._formActor =
+            this.formActor =
                 Program.GithubActors.ActorOf(
                     Props.Create(() => new RepoResultsActor(this.dgUsers, this.tsStatus, this.tsProgress))
                         .WithDispatcher("akka.actor.synchronized-dispatcher")); // run on the UI thread
 
-            this.Text = string.Format("Repos Similar to {0} / {1}", this._repo.Owner, this._repo.Repo);
+            this.Text = string.Format("Repos Similar to {0} / {1}", this.repo.Owner, this.repo.Repo);
 
             // start subscribing to updates
-            this._githubCoordinator.Tell(new GithubCoordinatorActor.SubscribeToProgressUpdates(this._formActor));
+            this.githubCoordinator.Tell(new GithubCoordinatorActor.SubscribeToProgressUpdates(this.formActor));
         }
 
         /// <summary>
@@ -89,10 +98,10 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void RepoResultsForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void RepoResultsFormFormClosing(object sender, FormClosingEventArgs e)
         {
             // kill the form actor
-            this._formActor.Tell(PoisonPill.Instance);
+            this.formActor.Tell(PoisonPill.Instance);
         }
     }
 }

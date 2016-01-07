@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubValidatorActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Actor has one job - ensure that a public repo exists at the specified address
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubValidatorActor.cs" company="none">
@@ -28,9 +37,9 @@ namespace GithubActors.Actors
     public class GithubValidatorActor : ReceiveActor
     {
         /// <summary>
-        /// The _git hub client.
+        ///     The _git hub client.
         /// </summary>
-        private readonly IGitHubClient _gitHubClient;
+        private readonly IGitHubClient gitHubClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GithubValidatorActor"/> class.
@@ -40,12 +49,12 @@ namespace GithubActors.Actors
         /// </param>
         public GithubValidatorActor(IGitHubClient gitHubClient)
         {
-            this._gitHubClient = gitHubClient;
+            this.gitHubClient = gitHubClient;
             this.ReadyToValidate();
         }
 
         /// <summary>
-        /// The ready to validate.
+        ///     The ready to validate.
         /// </summary>
         private void ReadyToValidate()
         {
@@ -62,7 +71,7 @@ namespace GithubActors.Actors
 
                         // close over the sender in an instance variable
                         var sender = this.Sender;
-                        this._gitHubClient.Repository.Get(userOwner.Item1, userOwner.Item2).ContinueWith<object>(
+                        this.gitHubClient.Repository.Get(userOwner.Item1, userOwner.Item2).ContinueWith<object>(
                             t =>
                                 {
                                     // Rule #1 of async in Akka.NET - turn exceptions into messages your actor understands
@@ -123,14 +132,14 @@ namespace GithubActors.Actors
         {
             var split = new Uri(repoUri, UriKind.Absolute).PathAndQuery.TrimEnd('/').Split('/').Reverse().ToList();
 
-                // uri path without trailing slash
+            // uri path without trailing slash
             return Tuple.Create(split[1], split[0]); // User, Repo
         }
 
         #region Messages
 
         /// <summary>
-        /// The validate repo.
+        ///     The validate repo.
         /// </summary>
         public class ValidateRepo
         {
@@ -146,13 +155,13 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo uri.
+            ///     Gets the repo uri.
             /// </summary>
             public string RepoUri { get; private set; }
         }
 
         /// <summary>
-        /// The invalid repo.
+        ///     The invalid repo.
         /// </summary>
         public class InvalidRepo
         {
@@ -172,12 +181,12 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo uri.
+            ///     Gets the repo uri.
             /// </summary>
             public string RepoUri { get; private set; }
 
             /// <summary>
-            /// Gets the reason.
+            ///     Gets the reason.
             /// </summary>
             public string Reason { get; private set; }
         }
@@ -195,7 +204,7 @@ namespace GithubActors.Actors
         public class RepoIsValid
         {
             /// <summary>
-            /// The _instance.
+            ///     The _instance.
             /// </summary>
             private static readonly RepoIsValid _instance = new RepoIsValid();
 
@@ -207,14 +216,14 @@ namespace GithubActors.Actors
              */
 
             /// <summary>
-            /// Prevents a default instance of the <see cref="RepoIsValid"/> class from being created.
+            ///     Prevents a default instance of the <see cref="RepoIsValid" /> class from being created.
             /// </summary>
             private RepoIsValid()
             {
             }
 
             /// <summary>
-            /// Gets the instance.
+            ///     Gets the instance.
             /// </summary>
             public static RepoIsValid Instance
             {

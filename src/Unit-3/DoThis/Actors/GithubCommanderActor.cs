@@ -1,4 +1,13 @@
-﻿ #region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubCommanderActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Top-level actor responsible for coordinating and launching repo-processing jobs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubCommanderActor.cs" company="none">
@@ -14,6 +23,7 @@ namespace GithubActors.Actors
     #region Usings
 
     using System;
+    using System.Linq;
 
     using Akka.Actor;
     using Akka.Routing;
@@ -26,91 +36,100 @@ namespace GithubActors.Actors
     public class GithubCommanderActor : ReceiveActor, IWithUnboundedStash
     {
         /// <summary>
-        /// The _can accept job sender.
+        ///     The _can accept job sender.
         /// </summary>
-        private IActorRef _canAcceptJobSender;
+        private IActorRef canAcceptJobSender;
 
         /// <summary>
-        /// The _coordinator.
+        ///     The _coordinator.
         /// </summary>
-        private IActorRef _coordinator;
+        private IActorRef coordinator;
 
         /// <summary>
-        /// The pending job replies.
+        ///     The pending job replies.
         /// </summary>
         private int pendingJobReplies;
 
         /// <summary>
-        /// Gets or sets the stash.
-        /// </summary>
-        public IStash Stash { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GithubCommanderActor"/> class.
+        ///     Initializes a new instance of the <see cref="GithubCommanderActor" /> class.
         /// </summary>
         public GithubCommanderActor()
         {
             this.Ready();
         }
 
+        #region IWithUnboundedStash Members
+
         /// <summary>
-        /// The ready.
+        ///     Gets or sets the stash.
+        /// </summary>
+        public IStash Stash { get; set; }
+
+        #endregion
+
+        /// <summary>
+        ///     The ready.
         /// </summary>
         private void Ready()
         {
-            this.Receive<CanAcceptJob>(job =>
-            {
-                this._coordinator.Tell(job);
+            this.Receive<CanAcceptJob>(
+                job =>
+                    {
+                        this.coordinator.Tell(job);
 
-                this.BecomeAsking();
-            });
+                        this.BecomeAsking();
+                    });
         }
 
         /// <summary>
-        /// The become asking.
+        ///     The become asking.
         /// </summary>
         private void BecomeAsking()
         {
-            this._canAcceptJobSender = this.Sender;
-            this.pendingJobReplies = 9; // the number of routees
+            this.canAcceptJobSender = this.Sender;
+
+            // block, but ask the router for the number of routees. Avoids magic numbers.
+            this.pendingJobReplies = this.coordinator.Ask<Routees>(new GetRoutees()).Result.Members.Count();
             this.Become(this.Asking);
         }
 
         /// <summary>
-        /// The asking.
+        ///     The asking.
         /// </summary>
         private void Asking()
         {
             // stash any subsequent requests
             this.Receive<CanAcceptJob>(job => this.Stash.Stash());
 
-            this.Receive<UnableToAcceptJob>(job =>
-            {
-                this.pendingJobReplies--;
-                if (this.pendingJobReplies == 0)
-                {
-                    this._canAcceptJobSender.Tell(job);
-                    this.BecomeReady();
-                }
-            });
+            this.Receive<UnableToAcceptJob>(
+                job =>
+                    {
+                        this.pendingJobReplies--;
+                        if (this.pendingJobReplies == 0)
+                        {
+                            this.canAcceptJobSender.Tell(job);
+                            this.BecomeReady();
+                        }
+                    });
 
-            this.Receive<AbleToAcceptJob>(job =>
-            {
-                this._canAcceptJobSender.Tell(job);
+            this.Receive<AbleToAcceptJob>(
+                job =>
+                    {
+                        this.canAcceptJobSender.Tell(job);
 
-                // start processing messages
-                this.Sender.Tell(new GithubCoordinatorActor.BeginJob(job.Repo));
+                        // start processing messages
+                        this.Sender.Tell(new GithubCoordinatorActor.BeginJob(job.Repo));
 
-                // launch the new window to view results of the processing
-                Context.ActorSelection(ActorPaths.MainFormActor.Path).Tell(
-                    new MainFormActor.LaunchRepoResultsWindow(job.Repo, this.Sender));
+                        // launch the new window to view results of the processing
+                        Context.ActorSelection(ActorPaths.MainFormActor.Path)
+                            .Tell(new MainFormActor.LaunchRepoResultsWindow(job.Repo, this.Sender));
 
-                this.BecomeReady();
-            });
+                        this.BecomeReady();
+                    });
         }
 
         /// <summary>
-        /// The become ready.
+        ///     The become ready.
         /// </summary>
         private void BecomeReady()
         {
@@ -118,25 +137,16 @@ namespace GithubActors.Actors
             this.Stash.UnstashAll();
         }
 
-
         /// <summary>
-        /// The pre start.
+        ///     The pre start.
         /// </summary>
         protected override void PreStart()
         {
-            // create three GithubCoordinatorActor instances
-            Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "1");
-            Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "2");
-            Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "3");
-
             // create a broadcast router who will ask all of them if they're available for work
-            this._coordinator =
+            this.coordinator =
                 Context.ActorOf(
-                    Props.Empty.WithRouter(
-                        new BroadcastGroup(
-                            ActorPaths.GithubCoordinatorActor.Path + "1",
-                            ActorPaths.GithubCoordinatorActor.Path + "2",
-                            ActorPaths.GithubCoordinatorActor.Path + "3")));
+                    Props.Create(() => new GithubCoordinatorActor()).WithRouter(FromConfig.Instance), 
+                    ActorPaths.GithubCoordinatorActor.Name);
             base.PreStart();
         }
 
@@ -152,14 +162,14 @@ namespace GithubActors.Actors
         protected override void PreRestart(Exception reason, object message)
         {
             // kill off the old coordinator so we can recreate it from scratch
-            this._coordinator.Tell(PoisonPill.Instance);
+            this.coordinator.Tell(PoisonPill.Instance);
             base.PreRestart(reason, message);
         }
 
         #region Message classes
 
         /// <summary>
-        /// The can accept job.
+        ///     The can accept job.
         /// </summary>
         public class CanAcceptJob
         {
@@ -175,13 +185,13 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
         }
 
         /// <summary>
-        /// The able to accept job.
+        ///     The able to accept job.
         /// </summary>
         public class AbleToAcceptJob
         {
@@ -197,13 +207,13 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
         }
 
         /// <summary>
-        /// The unable to accept job.
+        ///     The unable to accept job.
         /// </summary>
         public class UnableToAcceptJob
         {
@@ -219,7 +229,7 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
         }

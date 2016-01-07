@@ -1,4 +1,14 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainFormActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Actor that runs on the UI thread and handles
+//   UI events for
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="MainFormActor.cs" company="none">
@@ -27,9 +37,9 @@ namespace GithubActors.Actors
     public class MainFormActor : ReceiveActor, IWithUnboundedStash
     {
         /// <summary>
-        /// The _validation label.
+        ///     The _validation label.
         /// </summary>
-        private readonly Label _validationLabel;
+        private readonly Label validationLabel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainFormActor"/> class.
@@ -39,14 +49,14 @@ namespace GithubActors.Actors
         /// </param>
         public MainFormActor(Label validationLabel)
         {
-            this._validationLabel = validationLabel;
+            this.validationLabel = validationLabel;
             this.Ready();
         }
 
         #region IWithUnboundedStash Members
 
         /// <summary>
-        /// Gets or sets the stash.
+        ///     Gets or sets the stash.
         /// </summary>
         public IStash Stash { get; set; }
 
@@ -82,9 +92,9 @@ namespace GithubActors.Actors
         /// </param>
         private void BecomeBusy(string repoUrl)
         {
-            this._validationLabel.Visible = true;
-            this._validationLabel.Text = string.Format("Validating {0}...", repoUrl);
-            this._validationLabel.ForeColor = Color.Gold;
+            this.validationLabel.Visible = true;
+            this.validationLabel.Text = string.Format("Validating {0}...", repoUrl);
+            this.validationLabel.ForeColor = Color.Gold;
             this.Become(this.Busy);
         }
 
@@ -125,8 +135,8 @@ namespace GithubActors.Actors
         /// </param>
         private void BecomeReady(string message, bool isValid = true)
         {
-            this._validationLabel.Text = message;
-            this._validationLabel.ForeColor = isValid ? Color.Green : Color.Red;
+            this.validationLabel.Text = message;
+            this.validationLabel.ForeColor = isValid ? Color.Green : Color.Red;
             this.Stash.UnstashAll();
             this.Become(this.Ready);
         }
@@ -136,7 +146,7 @@ namespace GithubActors.Actors
         #region Messages
 
         /// <summary>
-        /// The launch repo results window.
+        ///     The launch repo results window.
         /// </summary>
         public class LaunchRepoResultsWindow
         {
@@ -156,12 +166,12 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
 
             /// <summary>
-            /// Gets the coordinator.
+            ///     Gets the coordinator.
             /// </summary>
             public IActorRef Coordinator { get; private set; }
         }

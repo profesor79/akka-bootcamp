@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="LauncherForm.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The launcher form.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="LauncherForm.cs" company="none">
@@ -23,17 +32,17 @@ namespace GithubActors
     #endregion
 
     /// <summary>
-    /// The launcher form.
+    ///     The launcher form.
     /// </summary>
     public partial class LauncherForm : Form
     {
         /// <summary>
-        /// The _main form actor.
+        ///     The _main form actor.
         /// </summary>
-        private IActorRef _mainFormActor;
+        private IActorRef mainFormActor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LauncherForm"/> class.
+        ///     Initializes a new instance of the <see cref="LauncherForm" /> class.
         /// </summary>
         public LauncherForm()
         {
@@ -49,10 +58,10 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainFormLoad(object sender, EventArgs e)
         {
             /* INITIALIZE ACTORS */
-            this._mainFormActor = Program.GithubActors.ActorOf(
+            this.mainFormActor = Program.GithubActors.ActorOf(
                 Props.Create(() => new MainFormActor(this.lblIsValid)), 
                 ActorPaths.MainFormActor.Name);
             Program.GithubActors.ActorOf(
@@ -72,9 +81,9 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void btnLaunch_Click(object sender, EventArgs e)
+        private void BtnLaunchClick(object sender, EventArgs e)
         {
-            this._mainFormActor.Tell(new ProcessRepo(this.tbRepoUrl.Text));
+            this.mainFormActor.Tell(new ProcessRepo(this.tbRepoUrl.Text));
         }
 
         /// <summary>
@@ -86,7 +95,7 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void LauncherForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void LauncherFormFormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
         }

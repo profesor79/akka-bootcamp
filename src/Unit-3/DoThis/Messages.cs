@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Messages.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Begin processing a new Github repository for analysis
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="Messages.cs" company="none">
@@ -28,13 +37,13 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the repo uri.
+        ///     Gets the repo uri.
         /// </summary>
         public string RepoUri { get; private set; }
     }
 
     /// <summary>
-    /// The repo key.
+    ///     The repo key.
     /// </summary>
     public class RepoKey
     {
@@ -54,18 +63,18 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the owner.
+        ///     Gets the owner.
         /// </summary>
         public string Owner { get; private set; }
 
         /// <summary>
-        /// Gets the repo.
+        ///     Gets the repo.
         /// </summary>
         public string Repo { get; private set; }
     }
 
     /// <summary>
-    /// The retryable query.
+    ///     The retryable query.
     /// </summary>
     public class RetryableQuery
     {
@@ -103,22 +112,22 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the query.
+        ///     Gets the query.
         /// </summary>
         public object Query { get; private set; }
 
         /// <summary>
-        /// Gets the allowable tries.
+        ///     Gets the allowable tries.
         /// </summary>
         public int AllowableTries { get; private set; }
 
         /// <summary>
-        /// Gets the current attempt.
+        ///     Gets the current attempt.
         /// </summary>
         public int CurrentAttempt { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether can retry.
+        ///     Gets a value indicating whether can retry.
         /// </summary>
         public bool CanRetry
         {
@@ -129,7 +138,7 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// Gets the remaining tries.
+        ///     Gets the remaining tries.
         /// </summary>
         public int RemainingTries
         {
@@ -140,10 +149,10 @@ namespace GithubActors
         }
 
         /// <summary>
-        /// The next try.
+        ///     The next try.
         /// </summary>
         /// <returns>
-        /// The <see cref="RetryableQuery"/>.
+        ///     The <see cref="RetryableQuery" />.
         /// </returns>
         public RetryableQuery NextTry()
         {

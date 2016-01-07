@@ -1,4 +1,13 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubAuth.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The github auth.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubAuth.cs" company="none">
@@ -24,17 +33,17 @@ namespace GithubActors
     #endregion
 
     /// <summary>
-    /// The github auth.
+    ///     The github auth.
     /// </summary>
     public partial class GithubAuth : Form
     {
         /// <summary>
-        /// The _auth actor.
+        ///     The _auth actor.
         /// </summary>
-        private IActorRef _authActor;
+        private IActorRef authActor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GithubAuth"/> class.
+        ///     Initializes a new instance of the <see cref="GithubAuth" /> class.
         /// </summary>
         public GithubAuth()
         {
@@ -50,7 +59,7 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void GithubAuth_Load(object sender, EventArgs e)
+        private void GithubAuthLoad(object sender, EventArgs e)
         {
             this.linkGhLabel.Links.Add(
                 new LinkLabel.Link
@@ -58,7 +67,7 @@ namespace GithubActors
                         LinkData =
                             "https://help.github.com/articles/creating-an-access-token-for-command-line-use/"
                     });
-            this._authActor =
+            this.authActor =
                 Program.GithubActors.ActorOf(
                     Props.Create(() => new GithubAuthenticationActor(this.lblAuthStatus, this)), 
                     ActorPaths.GithubAuthenticatorActor.Name);
@@ -73,7 +82,7 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void linkGhLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkGhLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = e.Link.LinkData as string;
             if (link != null)
@@ -92,9 +101,9 @@ namespace GithubActors
         /// <param name="e">
         /// The e.
         /// </param>
-        private void btnAuthenticate_Click(object sender, EventArgs e)
+        private void BtnAuthenticateClick(object sender, EventArgs e)
         {
-            this._authActor.Tell(new GithubAuthenticationActor.Authenticate(this.tbOAuth.Text));
+            this.authActor.Tell(new GithubAuthenticationActor.Authenticate(this.tbOAuth.Text));
         }
     }
 }

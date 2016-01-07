@@ -1,4 +1,14 @@
-﻿#region Copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GithubCoordinatorActor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Actor responsible for publishing data about the results
+//   of a github operation
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 //  <copyright file="GithubCoordinatorActor.cs" company="none">
@@ -18,6 +28,7 @@ namespace GithubActors.Actors
     using System.Linq;
 
     using Akka.Actor;
+    using Akka.Routing;
 
     using Octokit;
 
@@ -30,42 +41,42 @@ namespace GithubActors.Actors
     public class GithubCoordinatorActor : ReceiveActor
     {
         /// <summary>
-        /// The _current repo.
+        ///     The _current repo.
         /// </summary>
-        private RepoKey _currentRepo;
+        private RepoKey currentRepo;
 
         /// <summary>
-        /// The _github progress stats.
+        ///     The _github progress stats.
         /// </summary>
-        private GithubProgressStats _githubProgressStats;
+        private GithubProgressStats githubProgressStats;
 
         /// <summary>
-        /// The _github worker.
+        ///     The _github worker.
         /// </summary>
-        private IActorRef _githubWorker;
+        private IActorRef githubWorker;
 
         /// <summary>
-        /// The _publish timer.
+        ///     The _publish timer.
         /// </summary>
-        private ICancelable _publishTimer;
+        private ICancelable publishTimer;
 
         /// <summary>
-        /// The _received initial users.
+        ///     The _received initial users.
         /// </summary>
-        private bool _receivedInitialUsers;
+        private bool receivedInitialUsers;
 
         /// <summary>
-        /// The _similar repos.
+        ///     The _similar repos.
         /// </summary>
-        private Dictionary<string, SimilarRepo> _similarRepos;
+        private Dictionary<string, SimilarRepo> similarRepos;
 
         /// <summary>
-        /// The _subscribers.
+        ///     The _subscribers.
         /// </summary>
-        private HashSet<IActorRef> _subscribers;
+        private HashSet<IActorRef> subscribers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GithubCoordinatorActor"/> class.
+        ///     Initializes a new instance of the <see cref="GithubCoordinatorActor" /> class.
         /// </summary>
         public GithubCoordinatorActor()
         {
@@ -73,16 +84,18 @@ namespace GithubActors.Actors
         }
 
         /// <summary>
-        /// The pre start.
+        ///     The pre start.
         /// </summary>
         protected override void PreStart()
         {
-            this._githubWorker =
-                Context.ActorOf(Props.Create(() => new GithubWorkerActor(GithubClientFactory.GetClient)));
+            this.githubWorker =
+                Context.ActorOf(
+                    Props.Create(() => new GithubWorkerActor(GithubClientFactory.GetClient))
+                        .WithRouter(new RoundRobinPool(10)));
         }
 
         /// <summary>
-        /// The waiting.
+        ///     The waiting.
         /// </summary>
         private void Waiting()
         {
@@ -94,7 +107,7 @@ namespace GithubActors.Actors
                         this.BecomeWorking(job.Repo);
 
                         // kick off the job to query the repo's list of starrers
-                        this._githubWorker.Tell(new RetryableQuery(new GithubWorkerActor.QueryStarrers(job.Repo), 4));
+                        this.githubWorker.Tell(new RetryableQuery(new GithubWorkerActor.QueryStarrers(job.Repo), 4));
                     });
         }
 
@@ -106,27 +119,27 @@ namespace GithubActors.Actors
         /// </param>
         private void BecomeWorking(RepoKey repo)
         {
-            this._receivedInitialUsers = false;
-            this._currentRepo = repo;
-            this._subscribers = new HashSet<IActorRef>();
-            this._similarRepos = new Dictionary<string, SimilarRepo>();
-            this._publishTimer = new Cancelable(Context.System.Scheduler);
-            this._githubProgressStats = new GithubProgressStats();
+            this.receivedInitialUsers = false;
+            this.currentRepo = repo;
+            this.subscribers = new HashSet<IActorRef>();
+            this.similarRepos = new Dictionary<string, SimilarRepo>();
+            this.publishTimer = new Cancelable(Context.System.Scheduler);
+            this.githubProgressStats = new GithubProgressStats();
             this.Become(this.Working);
         }
 
         /// <summary>
-        /// The become waiting.
+        ///     The become waiting.
         /// </summary>
         private void BecomeWaiting()
         {
             // stop publishing
-            this._publishTimer.Cancel();
+            this.publishTimer.Cancel();
             this.Become(this.Waiting);
         }
 
         /// <summary>
-        /// The working.
+        ///     The working.
         /// </summary>
         private void Working()
         {
@@ -134,16 +147,16 @@ namespace GithubActors.Actors
             this.Receive<GithubWorkerActor.StarredReposForUser>(
                 user =>
                     {
-                        this._githubProgressStats = this._githubProgressStats.UserQueriesFinished();
+                        this.githubProgressStats = this.githubProgressStats.UserQueriesFinished();
                         foreach (var repo in user.Repos)
                         {
-                            if (!this._similarRepos.ContainsKey(repo.HtmlUrl))
+                            if (!this.similarRepos.ContainsKey(repo.HtmlUrl))
                             {
-                                this._similarRepos[repo.HtmlUrl] = new SimilarRepo(repo);
+                                this.similarRepos[repo.HtmlUrl] = new SimilarRepo(repo);
                             }
 
                             // increment the number of people who starred this repo
-                            this._similarRepos[repo.HtmlUrl].SharedStarrers++;
+                            this.similarRepos[repo.HtmlUrl].SharedStarrers++;
                         }
                     });
 
@@ -151,16 +164,16 @@ namespace GithubActors.Actors
                 update =>
                     {
                         // check to see if the job is done
-                        if (this._receivedInitialUsers && this._githubProgressStats.IsFinished)
+                        if (this.receivedInitialUsers && this.githubProgressStats.IsFinished)
                         {
-                            this._githubProgressStats = this._githubProgressStats.Finish();
+                            this.githubProgressStats = this.githubProgressStats.Finish();
 
                             // all repos minus forks of the current one
                             var sortedSimilarRepos =
-                                this._similarRepos.Values.Where(x => x.Repo.Name != this._currentRepo.Repo)
+                                this.similarRepos.Values.Where(x => x.Repo.Name != this.currentRepo.Repo)
                                     .OrderByDescending(x => x.SharedStarrers)
                                     .ToList();
-                            foreach (var subscriber in this._subscribers)
+                            foreach (var subscriber in this.subscribers)
                             {
                                 subscriber.Tell(sortedSimilarRepos);
                             }
@@ -168,9 +181,9 @@ namespace GithubActors.Actors
                             this.BecomeWaiting();
                         }
 
-                        foreach (var subscriber in this._subscribers)
+                        foreach (var subscriber in this.subscribers)
                         {
-                            subscriber.Tell(this._githubProgressStats);
+                            subscriber.Tell(this.githubProgressStats);
                         }
                     });
 
@@ -178,13 +191,13 @@ namespace GithubActors.Actors
             this.Receive<User[]>(
                 users =>
                     {
-                        this._receivedInitialUsers = true;
-                        this._githubProgressStats = this._githubProgressStats.SetExpectedUserCount(users.Length);
+                        this.receivedInitialUsers = true;
+                        this.githubProgressStats = this.githubProgressStats.SetExpectedUserCount(users.Length);
 
                         // queue up all of the jobs
                         foreach (var user in users)
                         {
-                            this._githubWorker.Tell(
+                            this.githubWorker.Tell(
                                 new RetryableQuery(new GithubWorkerActor.QueryStarrer(user.Login), 3));
                         }
                     });
@@ -196,7 +209,7 @@ namespace GithubActors.Actors
                 updates =>
                     {
                         // this is our first subscriber, which means we need to turn publishing on
-                        if (this._subscribers.Count == 0)
+                        if (this.subscribers.Count == 0)
                         {
                             Context.System.Scheduler.ScheduleTellRepeatedly(
                                 TimeSpan.FromMilliseconds(100), 
@@ -204,24 +217,24 @@ namespace GithubActors.Actors
                                 this.Self, 
                                 PublishUpdate.Instance, 
                                 this.Self, 
-                                this._publishTimer);
+                                this.publishTimer);
                         }
 
-                        this._subscribers.Add(updates.Subscriber);
+                        this.subscribers.Add(updates.Subscriber);
                     });
 
             // query failed, but can be retried
-            this.Receive<RetryableQuery>(query => query.CanRetry, query => this._githubWorker.Tell(query));
+            this.Receive<RetryableQuery>(query => query.CanRetry, query => this.githubWorker.Tell(query));
 
             // query failed, can't be retried, and it's a QueryStarrers operation - means the entire job failed
             this.Receive<RetryableQuery>(
                 query => !query.CanRetry && query.Query is GithubWorkerActor.QueryStarrers, 
                 query =>
                     {
-                        this._receivedInitialUsers = true;
-                        foreach (var subscriber in this._subscribers)
+                        this.receivedInitialUsers = true;
+                        foreach (var subscriber in this.subscribers)
                         {
-                            subscriber.Tell(new JobFailed(this._currentRepo));
+                            subscriber.Tell(new JobFailed(this.currentRepo));
                         }
 
                         this.BecomeWaiting();
@@ -230,13 +243,13 @@ namespace GithubActors.Actors
             // query failed, can't be retried, and it's a QueryStarrers operation - means individual operation failed
             this.Receive<RetryableQuery>(
                 query => !query.CanRetry && query.Query is GithubWorkerActor.QueryStarrer, 
-                query => this._githubProgressStats.IncrementFailures());
+                query => this.githubProgressStats.IncrementFailures());
         }
 
         #region Message classes
 
         /// <summary>
-        /// The begin job.
+        ///     The begin job.
         /// </summary>
         public class BeginJob
         {
@@ -252,13 +265,13 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
         }
 
         /// <summary>
-        /// The subscribe to progress updates.
+        ///     The subscribe to progress updates.
         /// </summary>
         public class SubscribeToProgressUpdates
         {
@@ -274,30 +287,30 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the subscriber.
+            ///     Gets the subscriber.
             /// </summary>
             public IActorRef Subscriber { get; private set; }
         }
 
         /// <summary>
-        /// The publish update.
+        ///     The publish update.
         /// </summary>
         public class PublishUpdate
         {
             /// <summary>
-            /// The _instance.
+            ///     The _instance.
             /// </summary>
             private static readonly PublishUpdate _instance = new PublishUpdate();
 
             /// <summary>
-            /// Prevents a default instance of the <see cref="PublishUpdate"/> class from being created.
+            ///     Prevents a default instance of the <see cref="PublishUpdate" /> class from being created.
             /// </summary>
             private PublishUpdate()
             {
             }
 
             /// <summary>
-            /// Gets the instance.
+            ///     Gets the instance.
             /// </summary>
             public static PublishUpdate Instance
             {
@@ -325,7 +338,7 @@ namespace GithubActors.Actors
             }
 
             /// <summary>
-            /// Gets the repo.
+            ///     Gets the repo.
             /// </summary>
             public RepoKey Repo { get; private set; }
         }
