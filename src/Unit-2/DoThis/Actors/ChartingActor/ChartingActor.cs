@@ -18,6 +18,17 @@
 // --------------------------------------------------------------------------------------------------------------------
 #endregion
 
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="ChartingActor.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.ChartingActor
 {
     #region Usings
@@ -39,7 +50,7 @@ namespace ChartApp.Actors.ChartingActor
     /// <summary>
     ///     The charting actor.
     /// </summary>
-    public class ChartingActor : ReceiveActor
+    public class ChartingActor : ReceiveActor, IWithUnboundedStash
     {
         /// <summary>
         ///     Maximum number of points we will allow in a series
@@ -49,7 +60,7 @@ namespace ChartApp.Actors.ChartingActor
         /// <summary>
         ///     The _chart.
         /// </summary>
-        private  Chart chart;
+        private readonly Chart chart;
 
         /// <summary>
         ///     The pause button.
@@ -66,8 +77,6 @@ namespace ChartApp.Actors.ChartingActor
         /// </summary>
         private int xPosCounter;
 
- 
- 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChartingActor"/> class.
         /// </summary>
@@ -101,6 +110,15 @@ namespace ChartApp.Actors.ChartingActor
             this.pauseButton = pauseButton;
             this.Charting();
         }
+
+        #region IWithUnboundedStash Members
+
+        /// <summary>
+        ///     Gets or sets the stash.
+        /// </summary>
+        public IStash Stash { get; set; }
+
+        #endregion
 
         /// <summary>
         ///     The set chart boundaries.
@@ -186,12 +204,19 @@ namespace ChartApp.Actors.ChartingActor
         /// </summary>
         private void Paused()
         {
+            // while paused, we need to stash AddSeries & RemoveSeries messages
+            this.Receive<AddSeries>(addSeries => this.Stash.Stash());
+            this.Receive<RemoveSeries>(removeSeries => this.Stash.Stash());
             this.Receive<Metric>(metric => this.HandleMetricsPaused(metric));
             this.Receive<TogglePause>(
                 pause =>
                     {
                         this.SetPauseButtonText(false);
                         this.UnbecomeStacked();
+
+                        // ChartingActor is leaving the Paused state, put messages back
+                        // into mailbox for processing under new behavior
+                        this.Stash.UnstashAll();
                     });
         }
 
