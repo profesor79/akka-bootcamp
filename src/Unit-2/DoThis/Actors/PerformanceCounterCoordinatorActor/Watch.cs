@@ -7,12 +7,27 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="Watch.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.PerformanceCounterCoordinatorActor
 {
+    #region Usings
+
     using ChartApp.Enums;
 
+    #endregion
+
     /// <summary>
-    /// Subscribe the <see cref="ChartApp.Actors.ChartingActor"/> to updates for <see cref="Counter"/>.
+    ///     Subscribe the <see cref="ChartApp.Actors.ChartingActor" /> to updates for <see cref="Counter" />.
     /// </summary>
     public class Watch
     {
@@ -28,7 +43,7 @@ namespace ChartApp.Actors.PerformanceCounterCoordinatorActor
         }
 
         /// <summary>
-        /// Gets the counter.
+        ///     Gets the counter.
         /// </summary>
         public CounterType Counter { get; private set; }
     }

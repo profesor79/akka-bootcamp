@@ -7,50 +7,53 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Copyright
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="ButtonToggleActor.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
 
 namespace ChartApp.Actors.ButtonToggleActor
 {
+    #region Usings
+
     using System.Windows.Forms;
 
     using Akka.Actor;
 
     using ChartApp.Enums;
 
+    #endregion
+
     /// <summary>
-    /// Actor responsible for managing button toggles
+    ///     Actor responsible for managing button toggles
     /// </summary>
     public class ButtonToggleActor : UntypedActor
     {
-        #region Message types
-
-        #endregion
-
         /// <summary>
-        /// The _my counter type.
+        ///     The _coordinator actor.
         /// </summary>
-        private readonly CounterType myCounterType;
+        private readonly IActorRef coordinatorActor;
 
         /// <summary>
-        /// The _is toggled on.
-        /// </summary>
-        private bool isToggledOn;
-
-        /// <summary>
-        /// The _my button.
+        ///     The _my button.
         /// </summary>
         private readonly Button myButton;
 
         /// <summary>
-        /// The _coordinator actor.
+        ///     The _my counter type.
         /// </summary>
-        private readonly IActorRef coordinatorActor;
+        private readonly CounterType myCounterType;
+
+        /// <summary>
+        ///     The _is toggled on.
+        /// </summary>
+        private bool isToggledOn;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtonToggleActor"/> class.
@@ -67,8 +70,11 @@ namespace ChartApp.Actors.ButtonToggleActor
         /// <param name="isToggledOn">
         /// The is toggled on.
         /// </param>
-        public ButtonToggleActor(IActorRef coordinatorActor, Button myButton, 
-                CounterType myCounterType, bool isToggledOn = false)
+        public ButtonToggleActor(
+            IActorRef coordinatorActor, 
+            Button myButton, 
+            CounterType myCounterType, 
+            bool isToggledOn = false)
         {
             this.coordinatorActor = coordinatorActor;
             this.myButton = myButton;
@@ -89,8 +95,7 @@ namespace ChartApp.Actors.ButtonToggleActor
                 // toggle is currently on
 
                 // stop watching this counter
-                this.coordinatorActor.Tell(
-                    new PerformanceCounterCoordinatorActor.Unwatch(this.myCounterType));
+                this.coordinatorActor.Tell(new PerformanceCounterCoordinatorActor.Unwatch(this.myCounterType));
 
                 this.FlipToggle();
             }
@@ -99,8 +104,7 @@ namespace ChartApp.Actors.ButtonToggleActor
                 // toggle is currently off
 
                 // start watching this counter
-                this.coordinatorActor.Tell(
-                    new PerformanceCounterCoordinatorActor.Watch(this.myCounterType));
+                this.coordinatorActor.Tell(new PerformanceCounterCoordinatorActor.Watch(this.myCounterType));
 
                 this.FlipToggle();
             }
@@ -111,7 +115,7 @@ namespace ChartApp.Actors.ButtonToggleActor
         }
 
         /// <summary>
-        /// The flip toggle.
+        ///     The flip toggle.
         /// </summary>
         private void FlipToggle()
         {
@@ -119,7 +123,10 @@ namespace ChartApp.Actors.ButtonToggleActor
             this.isToggledOn = !this.isToggledOn;
 
             // change the text of the button
-            this.myButton.Text = string.Format("{0} ({1})", this.myCounterType.ToString().ToUpperInvariant(), this.isToggledOn ? "ON" : "OFF");
+            this.myButton.Text = string.Format(
+                "{0} ({1})", 
+                this.myCounterType.ToString().ToUpperInvariant(), 
+                this.isToggledOn ? "ON" : "OFF");
         }
     }
 }

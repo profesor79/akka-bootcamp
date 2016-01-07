@@ -1,16 +1,16 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GatherMetrics.cs" company="">
+// <copyright file="TogglePause.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Signal used to indicate that it's time to sample all counters
+//   Toggles the pausing between charts
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 #region Copyright
 
 // --------------------------------------------------------------------------------------------------------------------
-//  <copyright file="GatherMetrics.cs" company="Glass Lewis">
+//  <copyright file="TogglePause.cs" company="Glass Lewis">
 //  All rights reserved @2015
 //  </copyright>
 //  <summary>
@@ -18,12 +18,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 #endregion
 
-namespace ChartApp.Reporting
+namespace ChartApp.Actors.ChartingActor
 {
     /// <summary>
-    ///     Signal used to indicate that it's time to sample all counters
+    ///     Toggles the pausing between charts
     /// </summary>
-    public class GatherMetrics
+    public class TogglePause
     {
     }
 }

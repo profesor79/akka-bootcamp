@@ -7,11 +7,21 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ChartApp.Reporting
-{ 
+#region Copyright
 
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="Metric.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
+namespace ChartApp.Reporting
+{
     /// <summary>
-    /// Metric data at the time of sample
+    ///     Metric data at the time of sample
     /// </summary>
     public class Metric
     {
@@ -31,12 +41,12 @@ namespace ChartApp.Reporting
         }
 
         /// <summary>
-        /// Gets the series.
+        ///     Gets the series.
         /// </summary>
         public string Series { get; private set; }
 
         /// <summary>
-        /// Gets the counter value.
+        ///     Gets the counter value.
         /// </summary>
         public float CounterValue { get; private set; }
     }

@@ -6,13 +6,29 @@
 //   The initialize chart.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="InitializeChart.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Messages
 {
+    #region Usings
+
     using System.Collections.Generic;
     using System.Windows.Forms.DataVisualization.Charting;
 
+    #endregion
+
     /// <summary>
-    /// The initialize chart.
+    ///     The initialize chart.
     /// </summary>
     public class InitializeChart
     {
@@ -28,7 +44,7 @@ namespace ChartApp.Messages
         }
 
         /// <summary>
-        /// Gets the initial series.
+        ///     Gets the initial series.
         /// </summary>
         public Dictionary<string, Series> InitialSeries { get; private set; }
     }

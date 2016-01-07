@@ -7,11 +7,26 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="ChartingActor.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.ChartingActor
 {
+    #region Usings
+
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Windows.Forms;
     using System.Windows.Forms.DataVisualization.Charting;
 
     using Akka.Actor;
@@ -19,30 +34,53 @@ namespace ChartApp.Actors.ChartingActor
     using ChartApp.Messages;
     using ChartApp.Reporting;
 
+    #endregion
+
     /// <summary>
-    /// The charting actor.
+    ///     The charting actor.
     /// </summary>
     public class ChartingActor : ReceiveActor
     {
         /// <summary>
-        /// Maximum number of points we will allow in a series
+        ///     Maximum number of points we will allow in a series
         /// </summary>
         public const int MaxPoints = 250;
 
         /// <summary>
-        /// Incrementing counter we use to plot along the X-axis
+        ///     The _chart.
         /// </summary>
-        private int xPosCounter = 0;
+        private  Chart chart;
 
         /// <summary>
-        /// The _chart.
+        ///     The pause button.
         /// </summary>
-        private readonly Chart chart;
+        private readonly Button pauseButton;
 
         /// <summary>
-        /// The _series index.
+        ///     The _series index.
         /// </summary>
         private Dictionary<string, Series> seriesIndex;
+
+        /// <summary>
+        ///     Incrementing counter we use to plot along the X-axis
+        /// </summary>
+        private int xPosCounter;
+
+ 
+ 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChartingActor"/> class.
+        /// </summary>
+        /// <param name="chart">
+        /// The chart.
+        /// </param>
+        /// <param name="pauseButton">
+        /// The pause button.
+        /// </param>
+        public ChartingActor(Chart chart, Button pauseButton)
+            : this(chart, new Dictionary<string, Series>(), pauseButton)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChartingActor"/> class.
@@ -50,14 +88,25 @@ namespace ChartApp.Actors.ChartingActor
         /// <param name="chart">
         /// The chart.
         /// </param>
-        public ChartingActor(Chart chart)
-            : this(chart, new Dictionary<string, Series>())
+        /// <param name="seriesIndex">
+        /// The series index.
+        /// </param>
+        /// <param name="pauseButton">
+        /// The pause button.
+        /// </param>
+        public ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex, Button pauseButton)
         {
+            this.chart = chart;
+            this.seriesIndex = seriesIndex;
+            this.pauseButton = pauseButton;
+            this.Charting();
         }
 
         /// <summary>
-        /// The set chart boundaries.
+        ///     The set chart boundaries.
         /// </summary>
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", 
+            Justification = "Reviewed. Suppression is OK here.")]
         private void SetChartBoundaries()
         {
             var minAxisY = 0.0d;
@@ -80,25 +129,71 @@ namespace ChartApp.Actors.ChartingActor
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChartingActor"/> class.
+        ///     The charting.
         /// </summary>
-        /// <param name="chart">
-        /// The chart.
-        /// </param>
-        /// <param name="seriesIndex">
-        /// The series index.
-        /// </param>
-        public ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex)
+        private void Charting()
         {
-            this.chart = chart;
-            this.seriesIndex = seriesIndex;
-
             this.Receive<InitializeChart>(ic => this.HandleInitialize(ic));
             this.Receive<AddSeries>(addSeries => this.HandleAddSeries(addSeries));
             this.Receive<RemoveSeries>(removeSeries => this.HandleRemoveSeries(removeSeries));
             this.Receive<Metric>(metric => this.HandleMetrics(metric));
+
+            // new receive handler for the TogglePause message type
+            this.Receive<TogglePause>(
+                pause =>
+                    {
+                        this.SetPauseButtonText(true);
+                        this.BecomeStacked(this.Paused);
+                    });
         }
 
+        /// <summary>
+        /// The handle metrics paused.
+        /// </summary>
+        /// <param name="metric">
+        /// The metric.
+        /// </param>
+        private void HandleMetricsPaused(Metric metric)
+        {
+            if (!string.IsNullOrEmpty(metric.Series) && this.seriesIndex.ContainsKey(metric.Series))
+            {
+                var series = this.seriesIndex[metric.Series];
+
+                // set the Y value to zero when we're paused
+                series.Points.AddXY(this.xPosCounter++, 0.0d);
+                while (series.Points.Count > MaxPoints)
+                {
+                    series.Points.RemoveAt(0);
+                }
+
+                this.SetChartBoundaries();
+            }
+        }
+
+        /// <summary>
+        /// The set pause button text.
+        /// </summary>
+        /// <param name="paused">
+        /// The paused.
+        /// </param>
+        private void SetPauseButtonText(bool paused)
+        {
+            this.pauseButton.Text = string.Format("{0}", !paused ? "PAUSE ||" : "RESUME ->");
+        }
+
+        /// <summary>
+        ///     The paused.
+        /// </summary>
+        private void Paused()
+        {
+            this.Receive<Metric>(metric => this.HandleMetricsPaused(metric));
+            this.Receive<TogglePause>(
+                pause =>
+                    {
+                        this.SetPauseButtonText(false);
+                        this.UnbecomeStacked();
+                    });
+        }
 
         #region Individual Message Type Handlers
 
@@ -148,8 +243,7 @@ namespace ChartApp.Actors.ChartingActor
         /// </param>
         private void HandleAddSeries(AddSeries series)
         {
-            if (!string.IsNullOrEmpty(series.Series.Name) &&
-                !this.seriesIndex.ContainsKey(series.Series.Name))
+            if (!string.IsNullOrEmpty(series.Series.Name) && !this.seriesIndex.ContainsKey(series.Series.Name))
             {
                 this.seriesIndex.Add(series.Series.Name, series.Series);
                 this.chart.Series.Add(series.Series);
@@ -186,7 +280,11 @@ namespace ChartApp.Actors.ChartingActor
             {
                 var series = this.seriesIndex[metric.Series];
                 series.Points.AddXY(this.xPosCounter++, metric.CounterValue);
-                while (series.Points.Count > MaxPoints) series.Points.RemoveAt(0);
+                while (series.Points.Count > MaxPoints)
+                {
+                    series.Points.RemoveAt(0);
+                }
+
                 this.SetChartBoundaries();
             }
         }

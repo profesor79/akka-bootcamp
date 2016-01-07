@@ -47,17 +47,19 @@ namespace ChartApp
         /// </summary>
         private void InitializeComponent()
         {
-            ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.sysChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.CpuToggle = new System.Windows.Forms.Button();
             this.MemoryToggle = new System.Windows.Forms.Button();
             this.DiskToggle = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)this.sysChart).BeginInit();
+            this.PauseToggle = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).BeginInit();
             this.SuspendLayout();
-
+            // 
             // sysChart
+            // 
             chartArea1.Name = "ChartArea1";
             this.sysChart.ChartAreas.Add(chartArea1);
             this.sysChart.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -73,40 +75,55 @@ namespace ChartApp
             this.sysChart.Size = new System.Drawing.Size(912, 549);
             this.sysChart.TabIndex = 0;
             this.sysChart.Text = "sysChart";
-
+            // 
             // CpuToggle
-            this.CpuToggle.Location = new System.Drawing.Point(747, 365);
+            // 
+            this.CpuToggle.Location = new System.Drawing.Point(762, 367);
             this.CpuToggle.Name = "CpuToggle";
             this.CpuToggle.Size = new System.Drawing.Size(138, 39);
             this.CpuToggle.TabIndex = 1;
             this.CpuToggle.Text = "CPU (ON)";
             this.CpuToggle.UseVisualStyleBackColor = true;
             this.CpuToggle.Click += new System.EventHandler(this.CpuToggleClick);
-
+            // 
             // MemoryToggle
-            this.MemoryToggle.Location = new System.Drawing.Point(747, 409);
+            // 
+            this.MemoryToggle.Location = new System.Drawing.Point(762, 411);
             this.MemoryToggle.Name = "MemoryToggle";
             this.MemoryToggle.Size = new System.Drawing.Size(138, 39);
             this.MemoryToggle.TabIndex = 1;
             this.MemoryToggle.Text = "MEMEORY (OFF)";
             this.MemoryToggle.UseVisualStyleBackColor = true;
             this.MemoryToggle.Click += new System.EventHandler(this.MemoryToggleClick);
-
+            // 
             // DiskToggle
-            this.DiskToggle.Location = new System.Drawing.Point(747, 453);
+            // 
+            this.DiskToggle.Location = new System.Drawing.Point(762, 455);
             this.DiskToggle.Name = "DiskToggle";
             this.DiskToggle.Size = new System.Drawing.Size(138, 39);
             this.DiskToggle.TabIndex = 1;
             this.DiskToggle.Text = "DISK (OFF)";
             this.DiskToggle.UseVisualStyleBackColor = true;
             this.DiskToggle.Click += new System.EventHandler(this.DiskToggleClick);
-
+            // 
+            // PauseToggle
+            // 
+            this.PauseToggle.Location = new System.Drawing.Point(762, 322);
+            this.PauseToggle.Name = "PauseToggle";
+            this.PauseToggle.Size = new System.Drawing.Size(138, 39);
+            this.PauseToggle.TabIndex = 1;
+            this.PauseToggle.Text = "PAUSE";
+            this.PauseToggle.UseVisualStyleBackColor = true;
+            this.PauseToggle.Click += new System.EventHandler(this.PauseToggleClick);
+            // 
             // Main
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(912, 549);
             this.Controls.Add(this.DiskToggle);
             this.Controls.Add(this.MemoryToggle);
+            this.Controls.Add(this.PauseToggle);
             this.Controls.Add(this.CpuToggle);
             this.Controls.Add(this.sysChart);
             this.Margin = new System.Windows.Forms.Padding(4);
@@ -114,8 +131,9 @@ namespace ChartApp
             this.Text = "System Metrics";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormClosing);
             this.Load += new System.EventHandler(this.MainLoad);
-            ((System.ComponentModel.ISupportInitialize)this.sysChart).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -139,6 +157,7 @@ namespace ChartApp
         /// The disk toggle.
         /// </summary>
         private Button DiskToggle;
+        private Button PauseToggle;
     }
 }
 

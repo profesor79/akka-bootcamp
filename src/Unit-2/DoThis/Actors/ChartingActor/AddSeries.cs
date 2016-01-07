@@ -3,16 +3,31 @@
 //   
 // </copyright>
 // <summary>
-//   Add a new  to the chart
+//   Add a new <see cref="Series" /> to the chart
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AddSeries.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.ChartingActor
 {
+    #region Usings
+
     using System.Windows.Forms.DataVisualization.Charting;
 
+    #endregion
+
     /// <summary>
-    /// Add a new <see cref="Series"/> to the chart
+    ///     Add a new <see cref="Series" /> to the chart
     /// </summary>
     public class AddSeries
     {
@@ -28,7 +43,7 @@ namespace ChartApp.Actors.ChartingActor
         }
 
         /// <summary>
-        /// Gets the series.
+        ///     Gets the series.
         /// </summary>
         public Series Series { get; private set; }
     }

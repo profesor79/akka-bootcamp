@@ -3,11 +3,25 @@
 //   
 // </copyright>
 // <summary>
-//   Actor responsible for monitoring a specific
+//   Actor responsible for monitoring a specific <see cref="PerformanceCounter" />
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="PerformanceCounterActor.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.PerformanceCounterActor
 {
+    #region Usings
+
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -16,35 +30,37 @@ namespace ChartApp.Actors.PerformanceCounterActor
 
     using ChartApp.Reporting;
 
+    #endregion
+
     /// <summary>
-    /// Actor responsible for monitoring a specific <see cref="PerformanceCounter"/>
+    ///     Actor responsible for monitoring a specific <see cref="PerformanceCounter" />
     /// </summary>
     public class PerformanceCounterActor : UntypedActor
     {
         /// <summary>
-        /// The series name.
+        ///     The cancel publishing.
         /// </summary>
-        private readonly string seriesName;
+        private readonly ICancelable cancelPublishing;
 
         /// <summary>
-        /// The performance counter generator.
+        ///     The performance counter generator.
         /// </summary>
         private readonly Func<PerformanceCounter> performanceCounterGenerator;
 
         /// <summary>
-        /// The counter.
+        ///     The series name.
         /// </summary>
-        private PerformanceCounter counter;
+        private readonly string seriesName;
 
         /// <summary>
-        /// The subscriptions.
+        ///     The subscriptions.
         /// </summary>
         private readonly HashSet<IActorRef> subscriptions;
 
         /// <summary>
-        /// The cancel publishing.
+        ///     The counter.
         /// </summary>
-        private readonly ICancelable cancelPublishing;
+        private PerformanceCounter counter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PerformanceCounterActor"/> class.
@@ -63,22 +79,58 @@ namespace ChartApp.Actors.PerformanceCounterActor
             this.cancelPublishing = new Cancelable(Context.System.Scheduler);
         }
 
+        /// <summary>
+        /// The on receive.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        protected override void OnReceive(object message)
+        {
+            if (message is GatherMetrics)
+            {
+                // publish latest counter value to all subscribers
+                var metric = new Metric(this.seriesName, this.counter.NextValue());
+                foreach (var sub in this.subscriptions)
+                {
+                    sub.Tell(metric);
+                }
+            }
+            else if (message is SubscribeCounter)
+            {
+                // add a subscription for this counter
+                // (it's parent's job to filter by counter types)
+                var sc = message as SubscribeCounter;
+                this.subscriptions.Add(sc.Subscriber);
+            }
+            else if (message is UnsubscribeCounter)
+            {
+                // remove a subscription from this counter
+                var uc = message as UnsubscribeCounter;
+                this.subscriptions.Remove(uc.Subscriber);
+            }
+        }
+
         #region Actor lifecycle methods
 
         /// <summary>
-        /// The pre start.
+        ///     The pre start.
         /// </summary>
         protected override void PreStart()
         {
             // create a new instance of the performance counter
             this.counter = this.performanceCounterGenerator();
-            Context.System.Scheduler.ScheduleTellRepeatedly(TimeSpan.FromMilliseconds(250), 
-                TimeSpan.FromMilliseconds(250), this.Self, 
-                new GatherMetrics(), this.Self, this.cancelPublishing);
+            Context.System.Scheduler.ScheduleTellRepeatedly(
+                TimeSpan.FromMilliseconds(250), 
+                TimeSpan.FromMilliseconds(250), 
+                this.Self, 
+                new GatherMetrics(), 
+                this.Self, 
+                this.cancelPublishing);
         }
 
         /// <summary>
-        /// The post stop.
+        ///     The post stop.
         /// </summary>
         protected override void PostStop()
         {
@@ -99,35 +151,5 @@ namespace ChartApp.Actors.PerformanceCounterActor
         }
 
         #endregion
-
-        /// <summary>
-        /// The on receive.
-        /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        protected override void OnReceive(object message)
-        {
-            if (message is GatherMetrics)
-            {
-                // publish latest counter value to all subscribers
-                var metric = new Metric(this.seriesName, this.counter.NextValue());
-                foreach(var sub in this.subscriptions)
-                    sub.Tell(metric);
-            }
-            else if (message is SubscribeCounter)
-            {
-                // add a subscription for this counter
-                // (it's parent's job to filter by counter types)
-                var sc = message as SubscribeCounter;
-                this.subscriptions.Add(sc.Subscriber);
-            }
-            else if (message is UnsubscribeCounter)
-            {
-                // remove a subscription from this counter
-                var uc = message as UnsubscribeCounter;
-                this.subscriptions.Remove(uc.Subscriber);
-            }
-        }
     }
 }

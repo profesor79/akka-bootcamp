@@ -7,29 +7,44 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Windows.Forms;
+#region Copyright
 
-using Akka.Actor;
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="Program.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
 
 namespace ChartApp
 {
+    #region Usings
+
+    using System;
+    using System.Windows.Forms;
+
+    using Akka.Actor;
+
+    #endregion
+
     /// <summary>
-    /// The program.
+    ///     The program.
     /// </summary>
-    static class Program
+    internal static class Program
     {
         /// <summary>
-        /// ActorSystem we'll be using to publish data to charts
-        /// and subscribe from performance counters
+        ///     ActorSystem we'll be using to publish data to charts
+        ///     and subscribe from performance counters
         /// </summary>
         public static ActorSystem ChartActors;
 
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             ChartActors = ActorSystem.Create("ChartActors");
             Application.EnableVisualStyles();

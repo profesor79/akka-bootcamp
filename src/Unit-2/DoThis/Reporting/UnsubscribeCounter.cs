@@ -3,17 +3,33 @@
 //   
 // </copyright>
 // <summary>
-//   Unsubscribes  from receiving updates for a given counter
+//   Unsubscribes <see cref="Subscriber" /> from receiving updates for a given counter
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="UnsubscribeCounter.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Reporting
 {
+    #region Usings
+
     using Akka.Actor;
 
     using ChartApp.Enums;
 
+    #endregion
+
     /// <summary>
-    /// Unsubscribes <see cref="Subscriber"/> from receiving updates for a given counter
+    ///     Unsubscribes <see cref="Subscriber" /> from receiving updates for a given counter
     /// </summary>
     public class UnsubscribeCounter
     {
@@ -33,12 +49,12 @@ namespace ChartApp.Reporting
         }
 
         /// <summary>
-        /// Gets the counter.
+        ///     Gets the counter.
         /// </summary>
         public CounterType Counter { get; private set; }
 
         /// <summary>
-        /// Gets the subscriber.
+        ///     Gets the subscriber.
         /// </summary>
         public IActorRef Subscriber { get; private set; }
     }

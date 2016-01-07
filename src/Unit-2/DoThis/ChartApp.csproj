@@ -59,6 +59,7 @@
     <Compile Include="Actors\ChartingActor\AddSeries.cs" />
     <Compile Include="Actors\ChartingActor\ChartingActor.cs" />
     <Compile Include="Actors\ChartingActor\RemoveSeries.cs" />
+    <Compile Include="Actors\ChartingActor\TogglePause.cs" />
     <Compile Include="Actors\PerformanceCounterActor\PerformanceCounterActor.cs" />
     <Compile Include="Actors\PerformanceCounterCoordinatorActor\PerformanceCounterCoordinatorActor.cs" />
     <Compile Include="Actors\PerformanceCounterCoordinatorActor\Unwatch.cs" />

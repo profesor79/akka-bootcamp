@@ -7,9 +7,23 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AssemblyInfo.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
+#region Usings
+
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+#endregion
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information

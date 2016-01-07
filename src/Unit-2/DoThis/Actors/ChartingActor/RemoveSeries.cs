@@ -3,15 +3,31 @@
 //   
 // </copyright>
 // <summary>
-//   Remove an existing  from the chart
+//   Remove an existing <see cref="Series" /> from the chart
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+#region Copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+//  <copyright file="RemoveSeries.cs" company="Glass Lewis">
+//  All rights reserved @2015
+//  </copyright>
+//  <summary>
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 namespace ChartApp.Actors.ChartingActor
 {
+    #region Usings
+
     using System.Windows.Forms.DataVisualization.Charting;
 
+    #endregion
+
     /// <summary>
-    /// Remove an existing <see cref="Series"/> from the chart
+    ///     Remove an existing <see cref="Series" /> from the chart
     /// </summary>
     public class RemoveSeries
     {
@@ -27,7 +43,7 @@ namespace ChartApp.Actors.ChartingActor
         }
 
         /// <summary>
-        /// Gets the series name.
+        ///     Gets the series name.
         /// </summary>
         public string SeriesName { get; private set; }
     }
