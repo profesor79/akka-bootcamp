@@ -74,51 +74,54 @@ namespace GithubActors.Actors
         {
             // query an individual starrer
             this.Receive<RetryableQuery>(
-                query => query.Query is QueryStarrer, 
+                query => query.Query is QueryStarrer,
                 query =>
                     {
-                        // ReSharper disable once PossibleNullReferenceException (we know from the previous IS statement that this is not null)
-                        var starrer = (query.Query as QueryStarrer).Login;
-                        try
-                        {
-                            var getStarrer = this.gitHubClient.Activity.Starring.GetAllForUser(starrer);
+                        // ReSharper disable once PossibleNullReferenceException
+                // (we know from the previous IS statement that this is not null)
+                var starrer = (query.Query as QueryStarrer).Login;
 
-                            // ewww
-                            getStarrer.Wait();
-                            var starredRepos = getStarrer.Result;
-                            this.Sender.Tell(new StarredReposForUser(starrer, starredRepos));
-                        }
-                        catch (Exception ex)
+                // close over the Sender in an instance variable
+                var sender = this.Sender;
+                this.gitHubClient.Activity.Starring.GetAllForUser(starrer).ContinueWith<object>(tr =>
+                    {
+                        // query faulted
+                        if (tr.IsFaulted || tr.IsCanceled)
                         {
-                            // operation failed - let the parent know
-                            this.Sender.Tell(query.NextTry());
+                            return query.NextTry();
                         }
-                    });
+
+                        // query succeeded
+                        return new StarredReposForUser(starrer, tr.Result);
+                    }).PipeTo(sender);
+
+            });
 
             // query all starrers for a repository
             this.Receive<RetryableQuery>(
-                query => query.Query is QueryStarrers, 
+                query => query.Query is QueryStarrers,
                 query =>
                     {
-                        // ReSharper disable once PossibleNullReferenceException (we know from the previous IS statement that this is not null)
-                        var starrers = (query.Query as QueryStarrers).Key;
-                        try
-                        {
-                            var getStars = this.gitHubClient.Activity.Starring.GetAllStargazers(
-                                starrers.Owner, 
-                                starrers.Repo);
+                        // ReSharper disable once PossibleNullReferenceException
+                // (we know from the previous IS statement that this is not null)
+                var starrers = (query.Query as QueryStarrers).Key;
 
-                            // ewww
-                            getStars.Wait();
-                            var stars = getStars.Result;
-                            this.Sender.Tell(stars.ToArray());
-                        }
-                        catch (Exception ex)
+
+                // close over the Sender in an instance variable
+                var sender = this.Sender;
+                this.gitHubClient.Activity.Starring.GetAllStargazers(starrers.Owner, starrers.Repo)
+                    .ContinueWith<object>(tr =>
+                    {
+                        // query faulted
+                        if (tr.IsFaulted || tr.IsCanceled)
                         {
-                            // operation failed - let the parent know
-                            this.Sender.Tell(query.NextTry());
+                            return query.NextTry();
                         }
-                    });
+
+                        return tr.Result.ToArray();
+                    }).PipeTo(sender);
+
+            });
         }
 
         #region Message classes

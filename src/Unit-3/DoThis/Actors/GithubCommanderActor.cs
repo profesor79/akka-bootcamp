@@ -46,6 +46,11 @@ namespace GithubActors.Actors
         private IActorRef coordinator;
 
         /// <summary>
+        /// The repo job.
+        /// </summary>
+        private RepoKey repoJob;
+
+        /// <summary>
         ///     The pending job replies.
         /// </summary>
         private int pendingJobReplies;
@@ -72,13 +77,12 @@ namespace GithubActors.Actors
         /// </summary>
         private void Ready()
         {
-            this.Receive<CanAcceptJob>(
-                job =>
-                    {
-                        this.coordinator.Tell(job);
-
-                        this.BecomeAsking();
-                    });
+            this.Receive<CanAcceptJob>(job =>
+            {
+                this.coordinator.Tell(job);
+                this.repoJob = job.Repo;
+                this.BecomeAsking();
+            });
         }
 
         /// <summary>
@@ -91,6 +95,9 @@ namespace GithubActors.Actors
             // block, but ask the router for the number of routees. Avoids magic numbers.
             this.pendingJobReplies = this.coordinator.Ask<Routees>(new GetRoutees()).Result.Members.Count();
             this.Become(this.Asking);
+            
+            // send ourselves a ReceiveTimeout message if no message within 3 seonds
+            Context.SetReceiveTimeout(TimeSpan.FromSeconds(3));
         }
 
         /// <summary>
@@ -126,6 +133,13 @@ namespace GithubActors.Actors
 
                         this.BecomeReady();
                     });
+
+            // means at least one actor failed to respond
+            this.Receive<ReceiveTimeout>(timeout =>
+            {
+                this.canAcceptJobSender.Tell(new UnableToAcceptJob(this.repoJob));
+                this.BecomeReady();
+            });
         }
 
         /// <summary>
@@ -135,6 +149,9 @@ namespace GithubActors.Actors
         {
             this.Become(this.Ready);
             this.Stash.UnstashAll();
+
+            // cancel ReceiveTimeout
+            Context.SetReceiveTimeout(null);
         }
 
         /// <summary>
